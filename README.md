@@ -20,7 +20,16 @@
 - Use a function to calculate what to render
 
 ## UI Mock-up
-- Coming soon
+### Landing Screen
+![Image of screen 1](https://github.com/sfsu-csc-413-fall19/final-project-jlahpsnc/blob/master/wireframes/screen_1.png)
+### Home Screen
+![Image of screen 2](https://github.com/sfsu-csc-413-fall19/final-project-jlahpsnc/blob/master/wireframes/screen_2.png)
+### Loading Screen
+![Image of screen 3](https://github.com/sfsu-csc-413-fall19/final-project-jlahpsnc/blob/master/wireframes/screen_3.png)
+### Game Screen A
+![Image of screen 4a](https://github.com/sfsu-csc-413-fall19/final-project-jlahpsnc/blob/master/wireframes/screen_4a.png)
+### Game Screen B
+![Image of screen 4b](https://github.com/sfsu-csc-413-fall19/final-project-jlahpsnc/blob/master/wireframes/screen_4b.png)
 
 ## Description
 - Our 2D web game will be a memory based card game. The cards will be laid faced down in a 5x5 grid, and players will take turns finding pairs. In order to find a pair, a player must first pick one card. That card will flip over and be revealed. The player must then attempt to pick the other matching card. If a player picks a matching pair, they go again. Once a player fails to pick a matching pair, their turn is over, and the other player's turn begins.
