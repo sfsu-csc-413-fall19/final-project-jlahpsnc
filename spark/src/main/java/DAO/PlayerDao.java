@@ -112,6 +112,31 @@ public class PlayerDao {
         }
     }
 
+    public PlayerDto updatePlayerLoggedStatusById(String id, boolean isLoggedIn) {
+        try {
+            ObjectId idToSearch = new ObjectId(id);
+            Document foundPlayer = playerCollection.find(eq("_id", idToSearch)).first();
+            if (foundPlayer != null) {
+                playerCollection.updateOne(eq("_id", idToSearch),
+                        new Document("$set", new Document("isLoggedIn", isLoggedIn)));
+
+                PlayerDto playerDtoToReturn = new PlayerDto(
+                        foundPlayer.get("_id").toString(),
+                        foundPlayer.get("username").toString(),
+                        foundPlayer.get("password").toString(),
+                        (int)foundPlayer.get("highScore"),
+                        (boolean)foundPlayer.get("isLoggedIn"),
+                        (boolean)foundPlayer.get("inQueue"),
+                        (boolean) foundPlayer.get("inGame"));
+                return playerDtoToReturn;
+            }
+            return new PlayerDto();
+        }
+        catch(Exception e) {
+            return new PlayerDto();
+        }
+    }
+
     public PlayerDto updatePlayerGameStatusByUsername(String username, boolean inQueue, boolean inGame) {
         Document foundPlayer = playerCollection.find(eq("username", username)).first();
         if (foundPlayer != null) {
