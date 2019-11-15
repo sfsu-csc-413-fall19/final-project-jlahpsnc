@@ -41,6 +41,23 @@ public class MainServer {
     }
 
     private static String logIn(Request request, Response response) {
+      String username = request.queryMap("username").value();
+      String password = request.queryMap("password").value();
+      PlayerDto receivedPlayer = PlayerDao.getInstance().getPlayerByUsername(username);
+
+      if (receivedPlayer != null) {
+            if (receivedPlayer.password == password) {
+                if (receivedPlayer.isLoggedIn){
+                    return "Player is already logged in";
+                }
+                else {
+                    return null;
+                }
+            }
+            else {
+                return "Incorrect Password";
+            }
+      }
       return null;
     }
 
