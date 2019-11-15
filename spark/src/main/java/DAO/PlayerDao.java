@@ -57,6 +57,7 @@ public class PlayerDao {
                         foundPlayer.get("username").toString(),
                         foundPlayer.get("password").toString(),
                         (int)foundPlayer.get("highScore"),
+                        (boolean)foundPlayer.get("isLoggedIn"),
                         (boolean)foundPlayer.get("inQueue"),
                         (boolean) foundPlayer.get("inGame"));
                 return playerDtoToReturn;
@@ -76,6 +77,7 @@ public class PlayerDao {
                     foundPlayer.get("username").toString(),
                     foundPlayer.get("password").toString(),
                     (int)foundPlayer.get("highScore"),
+                    (boolean)foundPlayer.get("isLoggedIn"),
                     (boolean)foundPlayer.get("inQueue"),
                     (boolean) foundPlayer.get("inGame"));
             return playerDtoToReturn;
@@ -98,6 +100,7 @@ public class PlayerDao {
                         foundPlayer.get("username").toString(),
                         foundPlayer.get("password").toString(),
                         (int)foundPlayer.get("highScore"),
+                        (boolean)foundPlayer.get("isLoggedIn"),
                         (boolean)foundPlayer.get("inQueue"),
                         (boolean) foundPlayer.get("inGame"));
                 return playerDtoToReturn;
@@ -122,6 +125,7 @@ public class PlayerDao {
                     foundPlayer.get("username").toString(),
                     foundPlayer.get("password").toString(),
                     (int)foundPlayer.get("highScore"),
+                    (boolean)foundPlayer.get("isLoggedIn"),
                     (boolean)foundPlayer.get("inQueue"),
                     (boolean) foundPlayer.get("inGame"));
             return playerDtoToReturn;

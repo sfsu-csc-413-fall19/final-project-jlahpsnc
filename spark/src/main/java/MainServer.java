@@ -17,35 +17,37 @@ public class MainServer {
   public static void main(String[] args) {
     port(1234);
 
-    // User is put into a queue until a game is found
-    post("/queue", MainServer::queue);
+    post("/login", MainServer::logIn);
+
+    post("/home", MainServer::home);
+
+    post("/play", MainServer::play);
+
+    post("/quit", MainServer::quit);
+
+    post("/rankings", MainServer::rankings);
   }
 
+    private static String rankings(Request request, Response response) {
+      return null;
+    }
 
-  // User is put into a queue until a game is found
-  private static String queue(Request request, Response response) {
-    // Check to make sure that a player username and password was sent via the parameter list
-    String username = request.queryMap("username").value();
-    String password = request.queryMap("password").value();
-    if (username != null && password != null) {
-        // Check to see if that player is already in the database, if not, add a new player
-        PlayerDto player = PlayerDao.getInstance().getPlayerByUsername(username);
-        if (player.username != null) {
-            // Check to make sure the password they provided matches the password in the database
-            if (PlayerDao.getInstance().passwordIsCorrect(username, password)) {
-                PlayerDao.getInstance().updatePlayerGameStatusByUsername(username, true, false);
-                queueList.add(PlayerDao.getInstance().getPlayerByUsername(username));
-                return "Player added to queue";
+    private static String quit(Request request, Response response) {
+      return null;
+    }
 
-            } else return "Password is incorrect";
-        } else {
-            String idOfAddedPlayer = PlayerDao.getInstance().addPlayerToDatabase(username, password);
+    private static String home(Request request, Response response) {
+      return null;
+    }
 
-            PlayerDao.getInstance().updatePlayerGameStatusById(idOfAddedPlayer, true, false);
-            queueList.add(PlayerDao.getInstance().getPlayerById(idOfAddedPlayer));
-            return "Player added to queue";
-        }
-    } else return "Username or password not passed in via parameters list";
+    private static String logIn(Request request, Response response) {
+      return null;
+    }
+
+
+    // User is put into a queue until a game is found
+  private static String play(Request request, Response response) {
+      return null;
   }
 
   // Goes through the queue list and matches players
@@ -59,35 +61,3 @@ public class MainServer {
       }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    // calling get will make your app start listening for the GET path with the /hello endpoint
-//    get("/hello", (req, res) -> "Hello World");
-//
-//    get("/api", (req, res) -> {
-//      System.out.println(req.queryMap().get("key").value());
-//      String value = req.queryMap().get("key").value();
-//      return "Hello " + value;
-//    });
-//
-//    post("/postApi", (req, res) -> {
-//      System.out.println(req.body());
-//      NoteDto note = new NoteDto("oiergioergoij", "This is some note in mongo");
-//      NoteDto note2 = new NoteDto("oiergioergoij", "This is some more text in mongo");
-//      List<NoteDto> noteList = new ArrayList<>();
-//      noteList.add(note);
-//      noteList.add(note2);
-//      Gson gson = new Gson();
-//      return gson.toJson(noteList);
-//    });
