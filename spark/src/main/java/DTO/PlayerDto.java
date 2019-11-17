@@ -1,6 +1,6 @@
 package DTO;
 
-public class PlayerDto {
+public class PlayerDto implements Comparable{
     public final String _id;
     public final String username;
     public final String password;
@@ -27,5 +27,13 @@ public class PlayerDto {
         this.isLoggedIn = isLoggedIn;
         this.inQueue = inQueue;
         this.inGame = inGame;
+    }
+
+    @Override
+    public int compareTo(Object player) {
+        int compareScore=((PlayerDto)player).highScore;
+
+        /* For Descending order */
+        return compareScore-this.highScore;
     }
 }

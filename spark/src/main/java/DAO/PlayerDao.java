@@ -3,9 +3,12 @@ package DAO;
 import DTO.PlayerDto;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+
+import java.util.ArrayList;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -83,6 +86,30 @@ public class PlayerDao {
             return playerDtoToReturn;
         }
         return new PlayerDto();
+    }
+
+    public ArrayList<PlayerDto> getAllPlayers() {
+        ArrayList<PlayerDto> playersList = new ArrayList<>();
+        MongoCursor<Document> cursor = playerCollection.find().iterator();
+
+        try {
+            while (cursor.hasNext()) {
+                Document tempDoc = cursor.next();
+                PlayerDto tempPlayer = new PlayerDto(
+                        tempDoc.get("_id").toString(),
+                        tempDoc.get("username").toString(),
+                        tempDoc.get("password").toString(),
+                        (int)tempDoc.get("highScore"),
+                        (boolean)tempDoc.get("isLoggedIn"),
+                        (boolean)tempDoc.get("inQueue"),
+                        (boolean) tempDoc.get("inGame"));
+
+                playersList.add(tempPlayer);
+            }
+        } finally {
+            cursor.close();
+        }
+        return playersList;
     }
 
     public PlayerDto updatePlayerGameStatusById(String id, boolean inQueue, boolean inGame) {
