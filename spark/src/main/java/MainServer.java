@@ -9,6 +9,8 @@ import spark.Request;
 import spark.Response;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class MainServer {
    // List of current players waiting in queue
@@ -49,7 +51,16 @@ public class MainServer {
     }
 
     private static String rankings(Request request, Response response) {
-      return null;
+        ArrayList<PlayerDto> allPlayers = PlayerDao.getInstance().getAllPlayers();
+        HashMap<String, Integer> playersRankings = new HashMap<String, Integer>();
+
+        // Players being sorter by ranking based on function compareTo in PlayerDto class
+        Collections.sort(allPlayers);
+
+        for (int  i = 0; i < 10; i++){
+            playersRankings.put(allPlayers.get(i).username, allPlayers.get(i).highScore);
+        }
+        return playersRankings.toString();
     }
 
     private static String quit(Request request, Response response) {
@@ -76,7 +87,24 @@ public class MainServer {
     }
 
     private static String logIn(Request request, Response response) {
-      return null;
+      String username = request.queryMap("username").value();
+      String password = request.queryMap("password").value();
+      PlayerDto receivedPlayer = PlayerDao.getInstance().getPlayerByUsername(username);
+
+      if (receivedPlayer != null) {
+            if (receivedPlayer.password == password) {
+                if (!receivedPlayer.isLoggedIn){
+                    PlayerDao.getInstance().updatePlayerLoggedStatusById(receivedPlayer._id, true);
+                    return receivedPlayer._id;
+                } else {
+                    return "Player is already logged in";
+                }
+            } else {
+                return "Incorrect Password";
+            }
+      } else {
+          return "Player not found";
+      }
     }
 
     // User is put into a queue until a game is found
