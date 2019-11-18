@@ -3,6 +3,7 @@ import static spark.Spark.*;
 import DAO.PlayerDao;
 import DTO.GameStateDto;
 import DTO.PlayerDto;
+import WebSocket.LoadingScreen;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import spark.Request;
@@ -21,6 +22,8 @@ public class MainServer {
 
   public static void main(String[] args) {
     port(1234);
+
+    webSocket("/wsLoading", LoadingScreen.class);
 
     post("/login", MainServer::logIn);
 

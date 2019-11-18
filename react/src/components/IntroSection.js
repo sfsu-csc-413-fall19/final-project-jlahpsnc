@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Modal } from 'flwww';
+import { NavLink } from 'react-router-dom';
 
 const IntroSection = () => {
   const [modalIsVisible, setModalIsVisible] = useState(false);
@@ -15,7 +16,6 @@ const IntroSection = () => {
         </Col>
       </Row>
       <Row className='row-style'>
-        <h3 className='title-subheader'>Are you new?</h3>
         <Button
           outlined
           round
@@ -24,7 +24,9 @@ const IntroSection = () => {
         >
           Learn how to play here!
         </Button>
-
+        <Button>
+          <NavLink to='/loading'>go to loading</NavLink>
+        </Button>
         <Modal isVisible={modalIsVisible} toggleModal={toggleModal}>
           <h3>How to play</h3>
           <p>Instructions on how to play the game:</p>

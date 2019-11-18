@@ -21,7 +21,7 @@ const LoginFields = () => {
       </Row>
       <Row className='row-style'>
         <Col grid='6'>
-          <Input placeholder='Password' icon='lock'></Input>
+          <Input placeholder='Password' icon='lock' type='password'></Input>
         </Col>
       </Row>
       <Row className='row-style'>
@@ -31,9 +31,7 @@ const LoginFields = () => {
           </Button>
         </Col>
         <Col grid='3'>
-          <Button outlined round>
-            Register
-          </Button>
+          <Button round>Register</Button>
         </Col>
       </Row>
     </Container>
