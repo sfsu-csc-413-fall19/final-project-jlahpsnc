@@ -38,6 +38,9 @@ body {
   color: #ffffff;
 }
 
+.row-space-between {
+  justify-content: space-between;
+}
 #splash {
   align-items: center;
   justify-content: center;

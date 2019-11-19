@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Button, Modal } from 'flwww';
 import { NavLink } from 'react-router-dom';
 
-const IntroSection = () => {
+const IntroSection = ({ history }) => {
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const toggleModal = () => {
     setModalIsVisible(!modalIsVisible);
@@ -24,9 +24,16 @@ const IntroSection = () => {
         >
           Learn how to play here!
         </Button>
-        <Button>
-          <NavLink to='/loading'>go to loading</NavLink>
+
+        {/* ONLY FOR TESTING */}
+        <Button type='danger'>
+          <a href='/loading'>aisudhfiasudhfsaiudhfoaishfdos</a>
         </Button>
+        <Button type='danger'>
+          <NavLink to='/home'>go to home screen</NavLink>
+        </Button>
+        {/* ONLY FOR TESTING */}
+
         <Modal isVisible={modalIsVisible} toggleModal={toggleModal}>
           <h3>How to play</h3>
           <p>Instructions on how to play the game:</p>

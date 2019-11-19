@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Container, Row, Col } from 'flwww';
+import { Container } from 'flwww';
 
-const wsSession = new WebSocket(`ws://localhost:1234/wsLoading`);
+const wsSession = new WebSocket('ws://localhost:1234/wsLoading');
 const Loadingpage = () => {
   const [userCount, setUserCount] = useState(0);
   const ws = React.useRef(wsSession);
 
   ws.current.onopen = () => {
     console.log('Connection open!');
+    ws.current.send(userCount);
   };
 
   ws.current.onmessage = message => {
@@ -17,6 +18,7 @@ const Loadingpage = () => {
 
   ws.current.onclose = () => {
     console.log('connection closed');
+    ws.current.send(userCount);
   };
 
   ws.current.onerror = () => {
@@ -24,7 +26,7 @@ const Loadingpage = () => {
   };
 
   return (
-    <Container full className='full-page'>
+    <Container className='full-page'>
       <h1>Hello World</h1>
       <h1>Number of Users in loading room: {userCount}</h1>
     </Container>

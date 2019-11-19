@@ -3,15 +3,23 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import Loadingpage from './pages/Loadingpage';
+import Homepage from './pages/Homepage';
 
 const routing = (
   <Router>
-    <div>
-      <Route exact path='/' component={App} />
-      <Route path='/loading' component={Loadingpage} />
-    </div>
+    <Switch>
+      <Route exact path='/'>
+        <App />
+      </Route>
+      <Route exact path='/loading'>
+        <Loadingpage />
+      </Route>
+      <Route exact path='/home'>
+        <Homepage />
+      </Route>
+    </Switch>
   </Router>
 );
 

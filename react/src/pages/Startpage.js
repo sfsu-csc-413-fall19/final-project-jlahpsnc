@@ -3,9 +3,9 @@ import { Container, Row, Col } from 'flwww';
 import LoginFields from '../components/LoginFields.js';
 import IntroSection from '../components/IntroSection.js';
 
-const Startpage = () => {
+const Startpage = ({ history }) => {
   return (
-    <Container full className='full-page'>
+    <Container className='full-page'>
       <Row className='full-page'>
         <Col grid='5'>
           <LoginFields />
