@@ -18,9 +18,18 @@ const Loadingpage = () => {
     console.log(message.data);
   };
 
-  ws.current.onclose = () => {
+  window.onbeforeunload = function() {
+    ws.current.onclose = function() {}; // disable onclose handler first
+    let currCount = -1;
     console.log('connection closed');
-    ws.current.send(userCount);
+    ws.current.send(currCount.toString());
+    ws.close();
+  };
+
+  ws.current.onclose = () => {
+    let currCount = -1;
+    console.log('connection closed');
+    ws.current.send(currCount.toString());
   };
 
   ws.current.onerror = () => {
@@ -30,6 +39,7 @@ const Loadingpage = () => {
   useEffect(ws.current.onopen, []);
 
   const nextPath = path => {
+    ws.current.send(-1 + '');
     history.push(path);
   };
 
@@ -38,14 +48,9 @@ const Loadingpage = () => {
       <h1>Hello World</h1>
       <h1>Number of Users in loading room: {userCount}</h1>
       <Row className='row-style'>
-        <Button
-          outlined
-          round
-          type='danger'
-          onClick={() => nextPath('/loading')}
-        >
+        <Button outlined round type='danger' onClick={() => nextPath('/')}>
           {/* <a href='/loading'>Go to loading page</a> */}
-          go to loading
+          go to start page
         </Button>
         <Button outlined round type='danger' onClick={() => nextPath('/home')}>
           {/* <NavLink to='/home'>go to home screen</NavLink> */}
