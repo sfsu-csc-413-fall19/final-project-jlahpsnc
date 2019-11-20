@@ -5,7 +5,7 @@ import IntroSection from '../components/IntroSection.js';
 
 const Startpage = ({ history }) => {
   return (
-    <Container className='full-page'>
+    <Container className='full-page' id='start-page'>
       <Row className='full-page'>
         <Col grid='5'>
           <LoginFields />

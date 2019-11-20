@@ -1,38 +1,29 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Modal } from 'flwww';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 
-const IntroSection = ({ history }) => {
+const IntroSection = () => {
+  let history = useHistory();
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const toggleModal = () => {
     setModalIsVisible(!modalIsVisible);
   };
 
+  const nextPath = path => {
+    history.push(path);
+  };
+
   return (
-    <Container>
-      <Row className='row-style'>
+    <Container className='full-page'>
+      <Row className='row-style title'>
         <Col grid='6'>
           <h1 id='title'>OP Memory</h1>
         </Col>
       </Row>
       <Row className='row-style'>
-        <Button
-          outlined
-          round
-          colors={{ mainColor: '#ffffff', secondColor: '#fff' }}
-          onClick={toggleModal}
-        >
+        <Button round onClick={toggleModal}>
           Learn how to play here!
         </Button>
-
-        {/* ONLY FOR TESTING */}
-        <Button type='danger'>
-          <a href='/loading'>aisudhfiasudhfsaiudhfoaishfdos</a>
-        </Button>
-        <Button type='danger'>
-          <NavLink to='/home'>go to home screen</NavLink>
-        </Button>
-        {/* ONLY FOR TESTING */}
 
         <Modal isVisible={modalIsVisible} toggleModal={toggleModal}>
           <h3>How to play</h3>
@@ -46,6 +37,24 @@ const IntroSection = ({ history }) => {
             Continue
           </Button>
         </Modal>
+      </Row>
+      <Row className='row-style'>
+        {/* ONLY FOR TESTING */}
+        <Button
+          outlined
+          round
+          type='danger'
+          onClick={() => nextPath('/loading')}
+        >
+          {/* <a href='/loading'>Go to loading page</a> */}
+          go to loading
+        </Button>
+        <Button outlined round type='danger' onClick={() => nextPath('/home')}>
+          {/* <NavLink to='/home'>go to home screen</NavLink> */}
+          go to home screen
+        </Button>
+        <NavLink to='/loading'>Go to loading</NavLink>
+        {/* ONLY FOR TESTING */}
       </Row>
     </Container>
   );

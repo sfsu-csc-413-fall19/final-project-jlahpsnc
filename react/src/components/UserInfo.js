@@ -19,17 +19,18 @@ const UserInfo = () => {
   return (
     <div>
       <Card>
-        <Row>
-          <Col grid='10'>
-            <Row>
-              <h3>Replace with user.username</h3>
-            </Row>
-            <Row>
-              <h3>Replace with user.highscore</h3>
-            </Row>
+        <Col grid='offset-2 8'>
+          <Row style={{ justifyContent: 'center' }}>
+            <h1>EpicGamer6969</h1>
+          </Row>
+        </Col>
+
+        <Row className='row-space-around'>
+          <Col grid='5'>
+            <h3>High Score: 15000</h3>
           </Col>
-          <Col grid='2'>
-            <p>Replace with user ranking</p>
+          <Col grid='4'>
+            <h3>Ranking: #1</h3>
           </Col>
         </Row>
       </Card>

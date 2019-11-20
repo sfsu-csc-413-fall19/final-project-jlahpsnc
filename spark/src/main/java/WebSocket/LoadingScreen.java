@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 public class LoadingScreen {
     static Map<Session, Session> sessionMap = new ConcurrentHashMap<>();
     static String userCount = "0";
-    public static Integer userCountInt = 0;
+    public static Integer userCountInt = 1;
 
     public static void broadcast(String message) {
         sessionMap.keySet().stream().filter(Session::isOpen).forEach(session -> {

@@ -10,7 +10,7 @@ const LoginFields = () => {
       </Row>
       <Row className='row-style'>
         <Card className='card-shadow'>
-          <img src={logo} className='App-logo' alt='logo' />
+          <img src={logo} className='App-logo' alt='logo' color='#113f67' />
           <p>Filler logo. To be replaced later</p>
         </Card>
       </Row>

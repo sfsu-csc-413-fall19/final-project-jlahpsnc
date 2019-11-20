@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Row, Col } from 'flwww';
 import UserInfo from '../components/UserInfo';
 import Rankings from '../components/Rankings';
+import HomeMenu from '../components/HomeMenu';
 
 const Homepage = () => {
   return (
@@ -13,6 +14,9 @@ const Homepage = () => {
         <Col grid='4'>
           <Rankings />
         </Col>
+      </Row>
+      <Row className='home-button-container'>
+        <HomeMenu />
       </Row>
     </Container>
   );
