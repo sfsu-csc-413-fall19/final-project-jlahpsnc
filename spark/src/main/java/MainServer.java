@@ -27,6 +27,8 @@ public class MainServer {
 
     post("/login", MainServer::logIn);
 
+    post("/register", MainServer::register);
+
     post("/home", MainServer::home);
 
     post("/play", MainServer::play);
@@ -37,6 +39,19 @@ public class MainServer {
 
     post("/playerInfo", MainServer::playerInfo);
   }
+
+    private static String register(Request request, Response response) {
+        String username = request.queryMap("username").value();
+        String password = request.queryMap("password").value();
+        String newUserId = PlayerDao.getInstance().addPlayerToDatabase(username, password);
+
+        if (newUserId != null) {
+            PlayerDao.getInstance().updatePlayerLoggedStatusById(newUserId, true);
+            return newUserId;
+        } else {
+            return "Player already exists";
+        }
+    }
 
     private static String playerInfo(Request request, Response response) {
         String playerId = request.queryMap("playerId").value();
