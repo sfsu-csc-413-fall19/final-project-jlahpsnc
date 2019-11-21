@@ -1,3 +1,4 @@
 target
 .idea
 SPARK_DEMO.iml
+.DS_Store
