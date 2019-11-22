@@ -78,6 +78,7 @@ const logout = dispatch => {
       .then(res => {
         if (res.data === 'Player was logged out') {
           dispatch({ type: 'quit', payload: res.data });
+          localStorage.removeItem('id');
           history.push('/');
         }
       })

@@ -34,7 +34,7 @@ const Homepage = () => {
           </Col>
         </Row>
         <Row className='home-button-container'>
-          <HomeMenu />
+          <HomeMenu id={id} />
         </Row>
         <Row className='row-style'>
           <Button outlined round type='danger' onClick={() => nextPath('/')}>

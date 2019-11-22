@@ -1,9 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Row, Col, Button } from 'flwww';
 import { Context as AuthContext } from '../context/AuthContext';
 
-const HomeMenu = () => {
-  const { state, logout } = useContext(AuthContext);
+const HomeMenu = ({ id }) => {
+  const { logout } = useContext(AuthContext);
+
+  useEffect(() => {
+    console.log(id);
+  }, []);
 
   return (
     <Col grid='2'>
@@ -16,7 +20,7 @@ const HomeMenu = () => {
       <Row className='button-row'>
         <Button
           style={{ width: 200, height: 50 }}
-          onClick={() => logout(state.id)}
+          onClick={() => logout({ id })}
         >
           Quit
         </Button>
