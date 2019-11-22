@@ -58,7 +58,7 @@ public class PlayerDao {
                 PlayerDto playerDtoToReturn = new PlayerDto(
                         foundPlayer.get("_id").toString(),
                         foundPlayer.get("username").toString(),
-                        foundPlayer.get("password").toString(),
+                        null,
                         (int)foundPlayer.get("highScore"),
                         (boolean)foundPlayer.get("isLoggedIn"),
                         (boolean)foundPlayer.get("inQueue"),
@@ -78,7 +78,7 @@ public class PlayerDao {
             PlayerDto playerDtoToReturn = new PlayerDto(
                     foundPlayer.get("_id").toString(),
                     foundPlayer.get("username").toString(),
-                    foundPlayer.get("password").toString(),
+                    null,
                     (int)foundPlayer.get("highScore"),
                     (boolean)foundPlayer.get("isLoggedIn"),
                     (boolean)foundPlayer.get("inQueue"),
@@ -98,7 +98,7 @@ public class PlayerDao {
                 PlayerDto tempPlayer = new PlayerDto(
                         tempDoc.get("_id").toString(),
                         tempDoc.get("username").toString(),
-                        tempDoc.get("password").toString(),
+                        null,
                         (int)tempDoc.get("highScore"),
                         (boolean)tempDoc.get("isLoggedIn"),
                         (boolean)tempDoc.get("inQueue"),
@@ -125,7 +125,7 @@ public class PlayerDao {
                 PlayerDto playerDtoToReturn = new PlayerDto(
                         foundPlayer.get("_id").toString(),
                         foundPlayer.get("username").toString(),
-                        foundPlayer.get("password").toString(),
+                        null,
                         (int)foundPlayer.get("highScore"),
                         (boolean)foundPlayer.get("isLoggedIn"),
                         (boolean)foundPlayer.get("inQueue"),
@@ -150,7 +150,7 @@ public class PlayerDao {
                 PlayerDto playerDtoToReturn = new PlayerDto(
                         foundPlayer.get("_id").toString(),
                         foundPlayer.get("username").toString(),
-                        foundPlayer.get("password").toString(),
+                        null,
                         (int)foundPlayer.get("highScore"),
                         (boolean)foundPlayer.get("isLoggedIn"),
                         (boolean)foundPlayer.get("inQueue"),
@@ -175,7 +175,7 @@ public class PlayerDao {
             PlayerDto playerDtoToReturn = new PlayerDto(
                     foundPlayer.get("_id").toString(),
                     foundPlayer.get("username").toString(),
-                    foundPlayer.get("password").toString(),
+                    null,
                     (int)foundPlayer.get("highScore"),
                     (boolean)foundPlayer.get("isLoggedIn"),
                     (boolean)foundPlayer.get("inQueue"),
