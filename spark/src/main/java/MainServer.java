@@ -69,9 +69,8 @@ public class MainServer {
     }
 
     private static String rankings(Request request, Response response) {
-        ArrayList<PlayerDto> allPlayers = PlayerDao.getInstance().getAllPlayers();
+        ArrayList<PlayerDto> allPlayers = PlayerDao.getInstance().getAllPlayers(); /**BUG HERE. CANT GET PAST THIS LINE**/
         HashMap<String, Integer> playersRankings = new HashMap<String, Integer>();
-
         // Players being sorter by ranking based on function compareTo in PlayerDto class
         Collections.sort(allPlayers);
 
@@ -83,6 +82,7 @@ public class MainServer {
 
     private static String quit(Request request, Response response) {
         String playerId = request.queryMap("playerId").value();
+        //dont need to check if its null. Player can only log out if they are already logged in.
         if (playerId != null) {
             PlayerDto player = PlayerDao.getInstance().getPlayerById(playerId);
             if (player._id != null) {
@@ -108,15 +108,11 @@ public class MainServer {
       String username = request.queryMap("username").value();
       String password = request.queryMap("password").value();
       PlayerDto receivedPlayer = PlayerDao.getInstance().getPlayerByUsername(username);
-
       if (receivedPlayer != null) {
-            if (receivedPlayer.password == password) {
-                if (!receivedPlayer.isLoggedIn){
+            if (receivedPlayer.password.equals(password)) {
+                    //dont need to check if current player is logged in already. Will redirect to home page if it is
                     PlayerDao.getInstance().updatePlayerLoggedStatusById(receivedPlayer._id, true);
                     return receivedPlayer._id;
-                } else {
-                    return "Player is already logged in";
-                }
             } else {
                 return "Incorrect Password";
             }
