@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'flwww';
 import LoginFields from '../components/LoginFields.js';
 import IntroSection from '../components/IntroSection.js';
 
-const Startpage = ({ history }) => {
+const Startpage = props => {
   return (
     <Container className='full-page' id='start-page'>
       <Row className='full-page'>

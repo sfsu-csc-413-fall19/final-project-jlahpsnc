@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Modal } from 'flwww';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 
-const IntroSection = () => {
-  let history = useHistory();
+const IntroSection = props => {
+  let history = createBrowserHistory({ forceRefresh: true });
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const toggleModal = () => {
     setModalIsVisible(!modalIsVisible);
@@ -21,6 +22,7 @@ const IntroSection = () => {
         </Col>
       </Row>
       <Row className='row-style'>
+        <h1>{props.title}</h1>
         <Button round onClick={toggleModal}>
           Learn how to play here!
         </Button>
