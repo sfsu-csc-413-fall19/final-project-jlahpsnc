@@ -6,6 +6,7 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import Loadingpage from './pages/Loadingpage';
 import Homepage from './pages/Homepage';
 import { Provider as AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './ProtectedRoute';
 
 const theme = {
   defaultColor: '#226597',
@@ -27,16 +28,17 @@ const App = () => {
             <Startpage />
           </ThemeProvider>
         </Route>
-        <Route exact path='/loading'>
+        <ProtectedRoute exact path='/loading'>
           <ThemeProvider theme={theme}>
             <Loadingpage />
           </ThemeProvider>
-        </Route>
-        <Route exact path='/home'>
+        </ProtectedRoute>
+
+        <ProtectedRoute exact path='/home'>
           <ThemeProvider theme={theme}>
             <Homepage />
           </ThemeProvider>
-        </Route>
+        </ProtectedRoute>
       </Switch>
     </Router>
   );

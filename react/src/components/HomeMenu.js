@@ -1,18 +1,23 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Row, Col, Button } from 'flwww';
 import { Context as AuthContext } from '../context/AuthContext';
+import { useHistory } from 'react-router-dom';
 
 const HomeMenu = ({ id }) => {
+  let history = useHistory();
   const { logout } = useContext(AuthContext);
-
-  useEffect(() => {
-    console.log(id);
-  }, []);
 
   return (
     <Col grid='2'>
       <Row className='button-row'>
-        <Button style={{ width: 200, height: 50 }}>Start</Button>
+        <Button
+          style={{ width: 200, height: 50 }}
+          onClick={() => {
+            history.push('/loading');
+          }}
+        >
+          Start
+        </Button>
       </Row>
       <Row className='button-row'>
         <Button style={{ width: 200, height: 50 }}>Menu</Button>

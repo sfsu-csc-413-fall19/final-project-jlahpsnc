@@ -26,8 +26,7 @@ public class LoadingScreen {
     @OnWebSocketConnect
     public void connected(Session session) throws IOException {
         System.out.println("A client has connected");
-        System.out.println(session.getRemote());
-        sessionMap.put(session, null);
+        sessionMap.put(session, session);
     }
 
     @OnWebSocketClose
