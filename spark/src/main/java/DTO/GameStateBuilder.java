@@ -7,13 +7,18 @@ public class GameStateBuilder {
     private  Date startTime =  new Date();
     private  PlayerDto playerOne;
     private  PlayerDto playerTwo;
+    private int playerOneScore;
+    private int playerTwoScore;
     private  BoardDto gameBoard;
     private  int currentPlayersTurn = 1;
     private  int turnTimer = 30;
+    private int  numPairsLeft;
+    private CardDto cardFlipped;
+    private boolean jokerIsRevealed;
 
     public GameStateDto build() {
-        GameStateDto stateToReturn = new GameStateDto(gameId, startTime, playerOne, playerTwo,
-                gameBoard, currentPlayersTurn, turnTimer);
+        GameStateDto stateToReturn = new GameStateDto(gameId, startTime, playerOne, playerTwo, gameBoard,
+                currentPlayersTurn, playerOneScore, playerTwoScore, turnTimer, numPairsLeft, cardFlipped, jokerIsRevealed);
         return stateToReturn;
     }
 
@@ -49,6 +54,31 @@ public class GameStateBuilder {
 
     public GameStateBuilder setTurnTimer(int turnTimer) {
         this.turnTimer = turnTimer;
+        return this;
+    }
+
+    public GameStateBuilder setPlayerOneScore(int playerOneScore) {
+        this.playerOneScore = playerOneScore;
+        return this;
+    }
+
+    public GameStateBuilder setPlayerTwoScore(int playerTwoScore) {
+        this.playerTwoScore = playerTwoScore;
+        return this;
+    }
+
+    public GameStateBuilder setNumPairsLeft(int numPairsLeft) {
+        this.numPairsLeft = numPairsLeft;
+        return this;
+    }
+
+    public GameStateBuilder setCardFlipped(CardDto cardFlipped) {
+        this.cardFlipped = cardFlipped;
+        return this;
+    }
+
+    public GameStateBuilder setJokerIsRevealed(boolean jokerIsRevealed) {
+        this.jokerIsRevealed = jokerIsRevealed;
         return this;
     }
 }

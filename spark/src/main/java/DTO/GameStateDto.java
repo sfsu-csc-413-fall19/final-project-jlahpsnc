@@ -17,7 +17,7 @@ public class GameStateDto {
 
     // Dynamic game info
     public final BoardDto gameBoard;
-    public final String currentPlayersTurn;
+    public final int currentPlayersTurn;
     public final int playerOneScore;
     public final int playerTwoScore;
     public final int turnTimer;
@@ -25,7 +25,7 @@ public class GameStateDto {
     public final CardDto cardFlipped;
     public final boolean jokerIsRevealed;
 
-    public GameStateDto(int gameId, Date startTime, PlayerDto playerOne, PlayerDto playerTwo, BoardDto gameBoard, String currentPlayersTurn, int playerOneScore, int playerTwoScore, int turnTimer, int numPairsLeft, CardDto cardFlipped, boolean jokerIsRevealed) {
+    public GameStateDto(int gameId, Date startTime, PlayerDto playerOne, PlayerDto playerTwo, BoardDto gameBoard, int currentPlayersTurn, int playerOneScore, int playerTwoScore, int turnTimer, int numPairsLeft, CardDto cardFlipped, boolean jokerIsRevealed) {
         this.gameId = gameId;
         this.startTime = startTime;
         this.playerOne = playerOne;
