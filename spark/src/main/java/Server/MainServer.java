@@ -1,3 +1,5 @@
+package Server;
+
 import static spark.Spark.*;
 
 import DAO.PlayerDao;
@@ -11,7 +13,6 @@ import spark.Response;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 public class MainServer {
    // List of current players waiting in queue
@@ -154,8 +155,18 @@ public class MainServer {
         }
     }
 
+    // Takes a player and adds them to queue
     private static void addPlayerToQueue(PlayerDto player) {
       PlayerDao.getInstance().updatePlayerGameStatusById(player._id, true, false);
       queueList.add(player);
+    }
+
+    public static GameStateDto getGameById(int gameId) {
+      for (GameStateDto game: gameList) {
+          if (game.gameId == gameId) {
+              return game;
+          }
+      }
+      return null;
     }
 }
