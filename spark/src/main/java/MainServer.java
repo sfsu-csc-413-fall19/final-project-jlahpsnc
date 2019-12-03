@@ -35,9 +35,9 @@ public class MainServer {
 
     post("/quit", MainServer::quit);
 
-    post("/rankings", MainServer::rankings);
+    get("/rankings", MainServer::rankings);
 
-    post("/playerInfo", MainServer::playerInfo);
+    get("/playerInfo", MainServer::playerInfo);
   }
 
     private static String register(Request request, Response response) {
@@ -69,15 +69,21 @@ public class MainServer {
     }
 
     private static String rankings(Request request, Response response) {
-        ArrayList<PlayerDto> allPlayers = PlayerDao.getInstance().getAllPlayers(); /**BUG HERE. CANT GET PAST THIS LINE**/
-        HashMap<String, Integer> playersRankings = new HashMap<String, Integer>();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        int size = 0;
+        ArrayList<PlayerDto> allPlayers = PlayerDao.getInstance().getAllPlayers();
+
         // Players being sorter by ranking based on function compareTo in PlayerDto class
         Collections.sort(allPlayers);
 
-        for (int  i = 0; i < 10; i++){
-            playersRankings.put(allPlayers.get(i).username, allPlayers.get(i).highScore);
+        if (allPlayers.size() < 10) {
+            size = allPlayers.size();
+        } else {
+            size = 10;
         }
-        return playersRankings.toString();
+        PlayerDto[] topPlayers = allPlayers.subList(0, size).toArray(new PlayerDto[allPlayers.size()]);
+
+        return gson.toJson(topPlayers);
     }
 
     private static String quit(Request request, Response response) {
