@@ -1,7 +1,5 @@
 package DTO;
 
-import javax.smartcardio.Card;
-
 public class BoardDto {
     public CardDto[][] boardLayout;
 

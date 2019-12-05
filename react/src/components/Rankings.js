@@ -20,7 +20,7 @@ const Rankings = () => {
 
   // const getRankings = () => {
   //   axios
-  //     .post('/rankings')
+  //     .get('/rankings')
   //     .then(res => {
   //       console.log(res);
   //     })

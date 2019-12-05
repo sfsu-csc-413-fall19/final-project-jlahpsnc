@@ -17,8 +17,7 @@ public class GameStateBuilder {
     private boolean jokerIsRevealed;
 
     public GameStateDto build() {
-        GameStateDto stateToReturn = new GameStateDto(gameId, startTime, playerOne, playerTwo, gameBoard,
-                currentPlayersTurn, playerOneScore, playerTwoScore, turnTimer, numPairsLeft, cardFlipped, jokerIsRevealed);
+        GameStateDto stateToReturn = new GameStateDto(gameId, startTime, playerOne, playerTwo);
         return stateToReturn;
     }
 
