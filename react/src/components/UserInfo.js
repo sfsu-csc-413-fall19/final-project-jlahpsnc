@@ -7,7 +7,7 @@ const UserInfo = props => {
 
   const getUserInfo = id => {
     axios
-      .post(`/playerInfo?playerId=${id}`)
+      .get(`/playerInfo?playerId=${id}`)
       .then(res => {
         setUser(res.data);
       })

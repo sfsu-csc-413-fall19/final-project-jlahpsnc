@@ -2,7 +2,12 @@ import React from 'react';
 import './App.css';
 import Startpage from './pages/Startpage';
 import { ThemeProvider } from 'flwww';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import {
+  Route,
+  BrowserRouter as Router,
+  Switch,
+  Redirect
+} from 'react-router-dom';
 import Loadingpage from './pages/Loadingpage';
 import Homepage from './pages/Homepage';
 import { Provider as AuthProvider } from './context/AuthContext';
@@ -20,12 +25,13 @@ const theme = {
 };
 
 const App = () => {
+  const isAuthenticated = localStorage.getItem('id');
   return (
     <Router>
       <Switch>
         <Route exact path='/'>
           <ThemeProvider theme={theme}>
-            <Startpage />
+            {isAuthenticated !== null ? <Redirect to='/home' /> : <Startpage />}
           </ThemeProvider>
         </Route>
         <ProtectedRoute exact path='/loading'>

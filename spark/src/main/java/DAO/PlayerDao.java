@@ -78,7 +78,7 @@ public class PlayerDao {
             PlayerDto playerDtoToReturn = new PlayerDto(
                     foundPlayer.get("_id").toString(),
                     foundPlayer.get("username").toString(),
-                    null,
+                    foundPlayer.get("password").toString(),
                     (int)foundPlayer.get("highScore"),
                     (boolean)foundPlayer.get("isLoggedIn"),
                     (boolean)foundPlayer.get("inQueue"),
