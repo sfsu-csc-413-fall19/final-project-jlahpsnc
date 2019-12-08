@@ -31,10 +31,7 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void message(Session session, String message) throws IOException {
-        /* TODO
-        Parse string and see what type of message is being received
-        Then send the body of that message to the correct processor
-         */
+        MainServer.processMessage(message, session);
     }
 
     public void updateGame(GameStateDto game) {

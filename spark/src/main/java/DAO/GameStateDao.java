@@ -16,9 +16,9 @@ public class GameStateDao {
         return gameStateDaoObject;
     }
 
-    public void flipCard(int gameId, int x, int y) {
+    public boolean flipCard(int gameId, String playerAttemptingToFlipCard, int x, int y) {
         GameStateDto game = MainServer.getGameById(gameId);
-        if (game != null) {
+        if (game != null && game.currentPlayersTurn.equals(playerAttemptingToFlipCard)) {
             // If no other card has been flipped before, simply flip this card over
             if (game.cardFlipped == null) {
                 if (game.gameBoard.getCard(x,y) != null) {
@@ -39,6 +39,8 @@ public class GameStateDao {
 
                         updatePlayerScore(gameId, game.currentPlayersTurn);
                         game.numPairsLeft--;
+
+                        //TODO ????
                         checkForGameOver(gameId);
                     }
                     // If the new card being flipped does not match the already flipped card
@@ -53,6 +55,9 @@ public class GameStateDao {
                     }
                 }
             }
+            return true;
+        } else {
+            return false;
         }
     }
 
