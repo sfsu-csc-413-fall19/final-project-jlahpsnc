@@ -1,6 +1,7 @@
 package WebSocket;
 
 import DTO.GameStateDto;
+import Server.MainServer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -20,9 +21,12 @@ public class WebSocketHandler {
     @OnWebSocketClose
     public void closed(Session session, int statusCode, String reason) throws IOException{
         System.out.println("A client has disconnected");
-        /* TODO
-        Make sure to log user out when they close the tab
-         */
+
+        // Ask Niko
+        // Reason parameter may not be userId, however, front end MUST send userId somehow
+        // This may be changed, but userDisconnected() MUST be sent userId
+        String userId = reason;
+        MainServer.userDisconnected(userId, session);
     }
 
     @OnWebSocketMessage
@@ -34,9 +38,13 @@ public class WebSocketHandler {
     }
 
     public void updateGame(GameStateDto game) {
+        Response response = new Response();
+        response.setResponseType("Update Game");
+        response.setResponseBody(gson.toJson(game));
+
         try {
-            message(game.playerOneSession, gson.toJson(game));
-            message(game.playerTwoSession, gson.toJson(game));
+            game.playerOneSession.getRemote().sendString(gson.toJson(response));
+            game.playerTwoSession.getRemote().sendString(gson.toJson(response));
         } catch (IOException e) {
             e.printStackTrace();
         }

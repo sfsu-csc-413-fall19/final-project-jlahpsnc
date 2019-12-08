@@ -170,6 +170,12 @@ public class MainServer {
             if (game.gameId == gameId) {
                 PlayerDao.getInstance().updatePlayerGameStatusById(game.playerOne._id, false, false);
                 PlayerDao.getInstance().updatePlayerGameStatusById(game.playerTwo._id, false, false);
+
+                /* TODO
+                1. Update highscores (on MongoDB)
+                2. Notify players that game has ended (via websocket)
+                 */
+
                 gameList.remove(game);
                 return true;
             }
@@ -177,9 +183,17 @@ public class MainServer {
         return false;
     }
 
+    public static void userDisconnected(String userId, Session session) {
+      /* TODO
+      1. Check if person is in queue, and remove them if so
+      2. Check if person is in game, and end game if so
+      3. Check if person is logged in, and log them out if so
+       */
+    }
+
     // Helper function to generate a new gameId, and update the count for the next game gameId
     private static int generateNewGameId() {
       numberOfNextNewGame++;
-      return (numberOfNextNewGame - 1);
+      return (numberOfNextNewGame);
     }
 }
