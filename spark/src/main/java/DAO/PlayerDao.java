@@ -65,10 +65,10 @@ public class PlayerDao {
                         (boolean) foundPlayer.get("inGame"));
                 return playerDtoToReturn;
             }
-            return new PlayerDto();
+            return null;
         }
         catch(Exception e) {
-            return new PlayerDto();
+            return null;
         }
     }
 
@@ -85,7 +85,7 @@ public class PlayerDao {
                     (boolean) foundPlayer.get("inGame"));
             return playerDtoToReturn;
         }
-        return new PlayerDto();
+        return null;
     }
 
     public ArrayList<PlayerDto> getAllPlayers() {
@@ -132,10 +132,10 @@ public class PlayerDao {
                         (boolean) foundPlayer.get("inGame"));
                 return playerDtoToReturn;
             }
-            return new PlayerDto();
+            return null;
         }
         catch(Exception e) {
-            return new PlayerDto();
+            return null;
         }
     }
 
@@ -157,10 +157,10 @@ public class PlayerDao {
                         (boolean) foundPlayer.get("inGame"));
                 return playerDtoToReturn;
             }
-            return new PlayerDto();
+            return null;
         }
         catch(Exception e) {
-            return new PlayerDto();
+            return null;
         }
     }
 
@@ -182,7 +182,7 @@ public class PlayerDao {
                     (boolean) foundPlayer.get("inGame"));
             return playerDtoToReturn;
         }
-        return new PlayerDto();
+        return null;
     }
 
     public boolean passwordIsCorrect(String username, String password) {

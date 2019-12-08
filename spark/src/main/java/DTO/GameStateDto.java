@@ -1,8 +1,7 @@
 package DTO;
 
 import DAO.BoardDao;
-import DTO.BoardDto;
-import DTO.PlayerDto;
+import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.Date;
 
@@ -14,22 +13,28 @@ public class GameStateDto {
     // Players info
     public final PlayerDto playerOne;
     public final PlayerDto playerTwo;
+    public final Session playerOneSession;
+    public final Session playerTwoSession;
 
     // Dynamic game info
     public BoardDto gameBoard;
     public String currentPlayersTurn;  // Must be the ID of the player
-    public int playerOneScore;
-    public int playerTwoScore;
-    public int turnTimer;
-    public int numPairsLeft;
-    public CardDto cardFlipped;
-    public boolean jokerIsRevealed;
-    public boolean gameIsOver;
+    public int playerOneScore = 0;
+    public int playerTwoScore = 0;
+    public int numPairsLeft = 12;
+    public CardDto cardFlipped = null;
+    public boolean jokerIsRevealed = false;
+    public boolean gameIsOver = false;
 
-    public GameStateDto(int gameId, Date startTime, PlayerDto playerOne, PlayerDto playerTwo) {
+    public GameStateDto(int gameId, PlayerDto playerOne, Session playerOneSession,
+                        PlayerDto playerTwo, Session playerTwoSession) {
         this.gameId = gameId;
-        this.startTime = startTime;
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
+        this.startTime = new Date();
+        this.playerOneSession = playerOneSession;
+        this.playerTwoSession = playerTwoSession;
+        this.gameBoard = BoardDao.generateNewBoard();
+        this.currentPlayersTurn = playerOne._id;
     }
 }
