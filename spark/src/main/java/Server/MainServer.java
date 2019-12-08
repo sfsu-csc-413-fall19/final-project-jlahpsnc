@@ -5,41 +5,56 @@ import static spark.Spark.*;
 import DAO.PlayerDao;
 import DTO.GameStateDto;
 import DTO.PlayerDto;
-import WebSocket.LoadingScreen;
+import WebSocket.WebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import javafx.util.Pair;
 import spark.Request;
 import spark.Response;
+import org.eclipse.jetty.websocket.api.Session;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 public class MainServer {
    // List of current players waiting in queue
-   static ArrayList<PlayerDto> queueList = new ArrayList<>();
+   static ArrayList<Pair<PlayerDto, Session>> queueList = new ArrayList<>();
 
    //List of current games going on
    static ArrayList<GameStateDto> gameList = new ArrayList<>();
+   static int numberOfNextNewGame = 0;
 
   public static void main(String[] args) {
     port(1234);
 
-    webSocket("/wsLoading", LoadingScreen.class);
+    webSocket("/wsLoading", WebSocketHandler.class);
 
     post("/login", MainServer::logIn);
 
     post("/register", MainServer::register);
 
-    post("/home", MainServer::home);
-
-    post("/play", MainServer::play);
-
-    post("/quit", MainServer::quit);
+    get("/playerInfo", MainServer::playerInfo);
 
     get("/rankings", MainServer::rankings);
 
-    get("/playerInfo", MainServer::playerInfo);
+    post("/quit", MainServer::quit);
   }
+
+    private static String logIn(Request request, Response response) {
+        String username = request.queryMap("username").value();
+        String password = request.queryMap("password").value();
+        PlayerDto receivedPlayer = PlayerDao.getInstance().getPlayerByUsername(username);
+        if (receivedPlayer != null) {
+            if (receivedPlayer.password.equals(password)) {
+                //dont need to check if current player is logged in already. Will redirect to home page if it is
+                PlayerDao.getInstance().updatePlayerLoggedStatusById(receivedPlayer._id, true);
+                return receivedPlayer._id;
+            } else {
+                return "Incorrect Password";
+            }
+        } else {
+            return "Player not found";
+        }
+    }
 
     private static String register(Request request, Response response) {
         String username = request.queryMap("username").value();
@@ -107,60 +122,39 @@ public class MainServer {
         }
     }
 
-    private static String home(Request request, Response response) {
-      return null;
-    }
-
-    private static String logIn(Request request, Response response) {
-      String username = request.queryMap("username").value();
-      String password = request.queryMap("password").value();
-      PlayerDto receivedPlayer = PlayerDao.getInstance().getPlayerByUsername(username);
-      if (receivedPlayer != null) {
-            if (receivedPlayer.password.equals(password)) {
-                    //dont need to check if current player is logged in already. Will redirect to home page if it is
-                    PlayerDao.getInstance().updatePlayerLoggedStatusById(receivedPlayer._id, true);
-                    return receivedPlayer._id;
-            } else {
-                return "Incorrect Password";
-            }
-      } else {
-          return "Player not found";
-      }
-    }
-
-    // User is put into a queue until a game is found
-    private static String play(Request request, Response response) {
-        String playerId = request.queryMap("playerId").value();
-        if (playerId != null) {
-            PlayerDto player = PlayerDao.getInstance().getPlayerById(playerId);
-            if (player._id != null) {
-                addPlayerToQueue(player);
-                return "Added player to queue";
-            } else {
-                return "Player with that id does not exist";
-            }
-        } else {
-            return "No playerId passed in via request parameters";
-        }
-    }
-
-    // Goes through the queue list and matches players to a game lobby
-    private static void findMatches() {
-        while (queueList.size() >= 2) {
-          PlayerDto playerOne = queueList.remove(0);
-          PlayerDto playerTwo = queueList.remove(0);
-
-          PlayerDao.getInstance().updatePlayerGameStatusById(playerOne._id, false, true);
-          PlayerDao.getInstance().updatePlayerGameStatusById(playerTwo._id, false, true);
-        }
-    }
-
     // Takes a player and adds them to queue
-    private static void addPlayerToQueue(PlayerDto player) {
-      PlayerDao.getInstance().updatePlayerGameStatusById(player._id, true, false);
-      queueList.add(player);
+    public static boolean addPlayerToQueue(String playerId, Session session) {
+      PlayerDto player = PlayerDao.getInstance().getPlayerById(playerId);
+        if (player != null) {
+            PlayerDao.getInstance().updatePlayerGameStatusById(player._id, true, false);
+            queueList.add(new Pair<>(player, session));
+
+            // After adding a player to the queue, attempt to match them with someone else in the queue
+            if (queueList.size() == 2) {
+                Pair<PlayerDto, Session> playerOne = queueList.remove(0);
+                PlayerDao.getInstance().updatePlayerGameStatusById(playerOne.getKey()._id, false, true);
+                Pair<PlayerDto, Session> playerTwo = queueList.remove(0);
+                PlayerDao.getInstance().updatePlayerGameStatusById(playerTwo.getKey()._id, false, true);
+
+                createGame(playerOne, playerTwo);
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
+    // Helper function to create a game given two players and their sessions
+    private static void createGame(Pair<PlayerDto, Session> playerOne, Pair<PlayerDto, Session> playerTwo) {
+        GameStateDto newGame = new GameStateDto(generateNewGameId(), playerOne.getKey(), playerOne.getValue(),
+                playerTwo.getKey(), playerTwo.getValue());
+
+        gameList.add(newGame);
+        WebSocketHandler.newGameBroadcast(newGame);
+    }
+
+    // Returns an ongoing game from the game list, based on the gameId
     public static GameStateDto getGameById(int gameId) {
       for (GameStateDto game: gameList) {
           if (game.gameId == gameId) {
@@ -168,5 +162,24 @@ public class MainServer {
           }
       }
       return null;
+    }
+
+    // Removes an ongoing game from the game list, based on the gameId
+    public static boolean removeGameById(int gameId) {
+        for (GameStateDto game: gameList) {
+            if (game.gameId == gameId) {
+                PlayerDao.getInstance().updatePlayerGameStatusById(game.playerOne._id, false, false);
+                PlayerDao.getInstance().updatePlayerGameStatusById(game.playerTwo._id, false, false);
+                gameList.remove(game);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Helper function to generate a new gameId, and update the count for the next game gameId
+    private static int generateNewGameId() {
+      numberOfNextNewGame++;
+      return (numberOfNextNewGame - 1);
     }
 }
