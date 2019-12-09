@@ -23,8 +23,15 @@ public class GameStateDao {
             // If no other card has been flipped before, simply flip this card over
             if (game.cardFlipped == null) {
                 if (game.gameBoard.getCard(x,y) != null) {
-                    game.gameBoard.getCard(x,y).isRevealed = true;
-                    game.cardFlipped = game.gameBoard.getCard(x,y);
+                    // If the card is a joker
+                    if (game.gameBoard.getCard(x,y).cardId == 99) {
+                        updatePlayerScore(gameId, game.currentPlayersTurn);
+                        game.gameBoard.getCard(x,y).isPaired = true;
+                        game.gameBoard.getCard(x,y).isRevealed = true;
+                    } else {
+                        game.gameBoard.getCard(x, y).isRevealed = true;
+                        game.cardFlipped = game.gameBoard.getCard(x, y);
+                    }
                     WebSocketHandler.updateGame(game);
                 }
             }
@@ -58,6 +65,7 @@ public class GameStateDao {
                         game.gameBoard.getCard(x,y).isRevealed = false;
 
                         changeTurns(gameId);
+                        WebSocketHandler.updateGame(game);
                     }
                 }
             }
