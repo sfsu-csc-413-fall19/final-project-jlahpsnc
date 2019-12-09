@@ -2,6 +2,7 @@ package Server;
 
 import static spark.Spark.*;
 
+import DAO.GameStateDao;
 import DAO.PlayerDao;
 import DTO.GameStateDto;
 import DTO.PlayerDto;
@@ -21,9 +22,11 @@ public class MainServer {
 
    //List of current games going on
    static ArrayList<GameStateDto> gameList = new ArrayList<>();
-   static int numberOfNextNewGame = 0;
+   static int totalGames = 0;
 
-  public static void main(String[] args) {
+   public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    public static void main(String[] args) {
     port(1234);
 
     webSocket("/wsLoading", WebSocketHandler.class);
@@ -35,122 +38,114 @@ public class MainServer {
     get("/playerInfo", MainServer::playerInfo);
 
     get("/rankings", MainServer::rankings);
-
-    post("/quit", MainServer::quit);
-  }
+    }
 
     private static String logIn(Request request, Response response) {
         String username = request.queryMap("username").value();
         String password = request.queryMap("password").value();
-        PlayerDto receivedPlayer = PlayerDao.getInstance().getPlayerByUsername(username);
-        if (receivedPlayer != null) {
-            if (receivedPlayer.password.equals(password)) {
-                //dont need to check if current player is logged in already. Will redirect to home page if it is
-                PlayerDao.getInstance().updatePlayerLoggedStatusById(receivedPlayer._id, true);
-                return receivedPlayer._id;
+        if (request.queryParams().size() == 2 && username != null && password != null) {
+            PlayerDto receivedPlayer = PlayerDao.getInstance().getPlayerByUsername(username);
+            if (receivedPlayer != null) {
+                if (receivedPlayer.password.equals(password)) {
+                    if (!receivedPlayer.isLoggedIn) {
+                        PlayerDao.getInstance().updatePlayerLoggedStatusById(receivedPlayer._id, true);
+                        WebSocket.Response messageToReturn = new WebSocket.Response("Login Success", receivedPlayer._id);
+                        return gson.toJson(messageToReturn);
+                    } else {
+                        WebSocket.Response messageToReturn = new WebSocket.Response("Login Failed", "User is logged in");
+                        return gson.toJson(messageToReturn);
+                    }
+                } else {
+                    WebSocket.Response messageToReturn = new WebSocket.Response("Login Failed", "Invalid password");
+                    return gson.toJson(messageToReturn);
+                }
             } else {
-                return "Incorrect Password";
+                WebSocket.Response messageToReturn = new WebSocket.Response("Login Failed", "Invalid username");
+                return gson.toJson(messageToReturn);
             }
         } else {
-            return "Player not found";
+            WebSocket.Response messageToReturn = new WebSocket.Response("Login Failed", "Invalid query");
+            return gson.toJson(messageToReturn);
         }
     }
 
     private static String register(Request request, Response response) {
         String username = request.queryMap("username").value();
         String password = request.queryMap("password").value();
-        String newUserId = PlayerDao.getInstance().addPlayerToDatabase(username, password);
-
-        if (newUserId != null) {
-            PlayerDao.getInstance().updatePlayerLoggedStatusById(newUserId, true);
-            return newUserId;
+        if (request.queryParams().size() == 2 && username != null && password != null) {
+            String newUserId = PlayerDao.getInstance().addPlayerToDatabase(username, password);
+            if (newUserId != null) {
+                WebSocket.Response messageToReturn = new WebSocket.Response("Register Success", newUserId);
+                return gson.toJson(messageToReturn);
+            } else {
+                WebSocket.Response messageToReturn = new WebSocket.Response("Register Failed", "Invalid username");
+                return gson.toJson(messageToReturn);
+            }
         } else {
-            return "Player already exists";
+            WebSocket.Response messageToReturn = new WebSocket.Response("Register Failed", "Invalid query");
+            return gson.toJson(messageToReturn);
         }
     }
 
     private static String playerInfo(Request request, Response response) {
         String playerId = request.queryMap("playerId").value();
-        if (playerId != null) {
-            PlayerDto playerInfoToReturn = PlayerDao.getInstance().getPlayerById(playerId);
-            if (playerInfoToReturn._id != null) {
+        if (request.queryParams().size() == 1 && playerId != null) {
+            PlayerDto playerToReturn = PlayerDao.getInstance().getPlayerById(playerId);
+            if (playerToReturn != null) {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                return gson.toJson(playerInfoToReturn);
+                WebSocket.Response messageToReturn = new WebSocket.Response("Player Info Success", gson.toJson(playerToReturn));
+                return gson.toJson(messageToReturn);
             } else {
-                return "Player with that id does not exist";
+                WebSocket.Response messageToReturn = new WebSocket.Response("Player Info Failed", "Invalid ID");
+                return gson.toJson(messageToReturn);
             }
         } else {
-            return "No playerId passed in via request parameters";
+            WebSocket.Response messageToReturn = new WebSocket.Response("Player Info Failed", "Invalid query");
+            return gson.toJson(messageToReturn);
         }
     }
 
     private static String rankings(Request request, Response response) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        int size = 0;
         ArrayList<PlayerDto> allPlayers = PlayerDao.getInstance().getAllPlayers();
-
-        // Players being sorter by ranking based on function compareTo in PlayerDto class
         Collections.sort(allPlayers);
 
-        if (allPlayers.size() < 10) {
+        int size = 10;
+        if (allPlayers.size() < size) {
             size = allPlayers.size();
-        } else {
-            size = 10;
         }
+
         PlayerDto[] topPlayers = allPlayers.subList(0, size).toArray(new PlayerDto[allPlayers.size()]);
-
-        return gson.toJson(topPlayers);
+        WebSocket.Response messageToReturn = new WebSocket.Response("Rankings Success", gson.toJson(topPlayers));
+        return gson.toJson(messageToReturn);
     }
 
-    private static String quit(Request request, Response response) {
-        String playerId = request.queryMap("playerId").value();
-        //dont need to check if its null. Player can only log out if they are already logged in.
-        if (playerId != null) {
-            PlayerDto player = PlayerDao.getInstance().getPlayerById(playerId);
-            if (player._id != null) {
-                if (player.isLoggedIn) {
-                    PlayerDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
-                    return "Player was logged out";
-                } else {
-                    return "Player is not logged in";
-                }
-            } else {
-                return "Player with that id does not exist";
-            }
-        } else {
-            return "No playerId passed in via request parameters";
-        }
-    }
-
-    // Takes a player and adds them to queue
-    public static boolean addPlayerToQueue(String playerId, Session session) {
+    // Adds a player to queue, given their ID and session
+    public static void addPlayerToQueue(String playerId, Session session) {
       PlayerDto player = PlayerDao.getInstance().getPlayerById(playerId);
         if (player != null) {
-            PlayerDao.getInstance().updatePlayerGameStatusById(player._id, true, false);
             queueList.add(new Pair<>(player, session));
+            PlayerDao.getInstance().updatePlayerGameStatusById(player._id, true, false);
 
             // After adding a player to the queue, attempt to match them with someone else in the queue
             if (queueList.size() == 2) {
                 Pair<PlayerDto, Session> playerOne = queueList.remove(0);
-                PlayerDao.getInstance().updatePlayerGameStatusById(playerOne.getKey()._id, false, true);
+                PlayerDao.getInstance().updatePlayerGameStatusById(playerOne.getKey()._id, false, false);
                 Pair<PlayerDto, Session> playerTwo = queueList.remove(0);
-                PlayerDao.getInstance().updatePlayerGameStatusById(playerTwo.getKey()._id, false, true);
+                PlayerDao.getInstance().updatePlayerGameStatusById(playerTwo.getKey()._id, false, false);
 
                 createGame(playerOne, playerTwo);
             }
-            return true;
-        }
-        else {
-            return false;
         }
     }
 
-    // Helper function to create a game given two players and their sessions
+    // Helper function to create a game, given two players and their sessions
     private static void createGame(Pair<PlayerDto, Session> playerOne, Pair<PlayerDto, Session> playerTwo) {
         GameStateDto newGame = new GameStateDto(generateNewGameId(), playerOne.getKey(), playerOne.getValue(),
                 playerTwo.getKey(), playerTwo.getValue());
 
         gameList.add(newGame);
+        PlayerDao.getInstance().updatePlayerGameStatusById(playerOne.getKey()._id, false, true);
+        PlayerDao.getInstance().updatePlayerGameStatusById(playerTwo.getKey()._id, false, true);
         WebSocketHandler.newGameBroadcast(newGame);
     }
 
@@ -183,17 +178,75 @@ public class MainServer {
         return false;
     }
 
+    // Helper function to generate a new gameId, and update the count for the next game gameId
+    private static int generateNewGameId() {
+      totalGames++;
+      return (totalGames);
+    }
+
+    public static void processMessage(String message, Session session) {
+      WebSocket.Response response = gson.fromJson(message, WebSocket.Response.class);
+
+      String responseType = response.responseType;
+      switch (responseType) {
+          case "Flip Card":
+              flipCard(response.responseBody);
+              break;
+
+          case "Logout":
+              logout(response.responseBody);
+              break;
+
+          case "Disconnected":
+              userDisconnected(response.responseBody, session);
+              break;
+
+      }
+    }
+
+    /*
+    Format of response body must be as follows: "gameId,playerId,x,y"
+    ex: "5,9F1d5q7,3,7"
+    */
+    private static void flipCard(String flipInformation) {
+        String[] splitString = flipInformation.split(",");
+        if (splitString.length == 4) {
+            int gameId = Integer.parseInt(splitString[0]);
+            String playerId = splitString[1];
+            int cardX = Integer.parseInt(splitString[2]);
+            int cardY = Integer.parseInt(splitString[3]);
+
+            GameStateDao.getInstance().flipCard(gameId, playerId, cardX, cardY);
+        }
+    }
+
+    /*
+    Format of response body must be as follows: "playerId"
+    ex: "9F1d5q7"
+    */
+    private static String logout(String playerId) {
+        PlayerDto player = PlayerDao.getInstance().getPlayerById(playerId);
+        if (player != null) {
+            if (player.isLoggedIn) {
+                PlayerDao.getInstance().updatePlayerGameStatusById(player._id, false, false);
+                PlayerDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
+                WebSocket.Response messageToReturn = new WebSocket.Response("Logout Success", player._id);
+                return gson.toJson(messageToReturn);
+            } else {
+                WebSocket.Response messageToReturn = new WebSocket.Response("Logout Failed", "User is not logged in");
+                return gson.toJson(messageToReturn);
+            }
+        } else {
+            WebSocket.Response messageToReturn = new WebSocket.Response("Logout Failed", "Invalid ID");
+            return gson.toJson(messageToReturn);
+        }
+    }
+
     public static void userDisconnected(String userId, Session session) {
       /* TODO
       1. Check if person is in queue, and remove them if so
       2. Check if person is in game, and end game if so
       3. Check if person is logged in, and log them out if so
        */
-    }
-
-    // Helper function to generate a new gameId, and update the count for the next game gameId
-    private static int generateNewGameId() {
-      numberOfNextNewGame++;
-      return (numberOfNextNewGame);
     }
 }

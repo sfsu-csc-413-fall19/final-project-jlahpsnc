@@ -31,13 +31,10 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void message(Session session, String message) throws IOException {
-        /* TODO
-        Parse string and see what type of message is being received
-        Then send the body of that message to the correct processor
-         */
+        MainServer.processMessage(message, session);
     }
 
-    public void updateGame(GameStateDto game) {
+    public static void updateGame(GameStateDto game) {
         Response response = new Response();
         response.setResponseType("Update Game");
         response.setResponseBody(gson.toJson(game));
@@ -53,6 +50,19 @@ public class WebSocketHandler {
     public static void newGameBroadcast(GameStateDto game) {
         Response response = new Response();
         response.setResponseType("New Game");
+        response.setResponseBody(gson.toJson(game));
+
+        try {
+            game.playerOneSession.getRemote().sendString(gson.toJson(response));
+            game.playerTwoSession.getRemote().sendString(gson.toJson(response));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void gameOverBroadcast(GameStateDto game) {
+        Response response = new Response();
+        response.setResponseType("Game Over");
         response.setResponseBody(gson.toJson(game));
 
         try {
