@@ -75,8 +75,6 @@ public class MainServer {
         if (request.queryParams().size() == 2 && username != null && password != null) {
             String newUserId = PlayerDao.getInstance().addPlayerToDatabase(username, password);
             if (newUserId != null) {
-                // Originally player was logged in automatically. Player should have to re-login
-                // PlayerDao.getInstance().updatePlayerLoggedStatusById(newUserId, true);
                 WebSocket.Response messageToReturn = new WebSocket.Response("Register Success", newUserId);
                 return gson.toJson(messageToReturn);
             } else {
@@ -112,7 +110,7 @@ public class MainServer {
         Collections.sort(allPlayers);
 
         int size = 10;
-        if (allPlayers.size() < 10) {
+        if (allPlayers.size() < size) {
             size = allPlayers.size();
         }
 
@@ -210,7 +208,7 @@ public class MainServer {
     Format of response body must be as follows: "gameId,playerId,x,y"
     ex: "5,9F1d5q7,3,7"
     */
-    private static boolean flipCard(String flipInformation) {
+    private static void flipCard(String flipInformation) {
         String[] splitString = flipInformation.split(",");
         if (splitString.length == 4) {
             int gameId = Integer.parseInt(splitString[0]);
@@ -218,11 +216,7 @@ public class MainServer {
             int cardX = Integer.parseInt(splitString[2]);
             int cardY = Integer.parseInt(splitString[3]);
 
-            boolean flippedSuccessfully = GameStateDao.getInstance().flipCard(gameId, playerId, cardX, cardY);
-            return flippedSuccessfully;
-        }
-        else {
-            return false;
+            GameStateDao.getInstance().flipCard(gameId, playerId, cardX, cardY);
         }
     }
 

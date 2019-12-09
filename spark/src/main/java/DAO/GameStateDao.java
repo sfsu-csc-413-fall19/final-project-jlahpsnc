@@ -3,6 +3,7 @@ package DAO;
 import DTO.CardDto;
 import DTO.GameStateDto;
 import Server.MainServer;
+import WebSocket.WebSocketHandler;
 
 public class GameStateDao {
     private static GameStateDao gameStateDaoObject;
@@ -24,6 +25,7 @@ public class GameStateDao {
                 if (game.gameBoard.getCard(x,y) != null) {
                     game.gameBoard.getCard(x,y).isRevealed = true;
                     game.cardFlipped = game.gameBoard.getCard(x,y);
+                    WebSocketHandler.updateGame(game);
                 }
             }
             // If a card has been flipped before, then we need to check if this new card bring flipped matches it
@@ -40,8 +42,12 @@ public class GameStateDao {
                         updatePlayerScore(gameId, game.currentPlayersTurn);
                         game.numPairsLeft--;
 
-                        //TODO ????
-                        checkForGameOver(gameId);
+                        if (checkForGameOver(gameId)) {
+                            game.gameIsOver = true;
+                            WebSocketHandler.gameOverBroadcast(game);
+                        } else {
+                            WebSocketHandler.updateGame(game);
+                        }
                     }
                     // If the new card being flipped does not match the already flipped card
                     else {
@@ -68,7 +74,6 @@ public class GameStateDao {
     private boolean checkForGameOver(int gameId) {
         GameStateDto game = MainServer.getGameById(gameId);
         if (game != null && game.numPairsLeft <= 0) {
-            game.gameIsOver = true;
             return true;
         }
         return false;
