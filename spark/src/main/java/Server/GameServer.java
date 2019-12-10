@@ -242,11 +242,35 @@ public class GameServer {
         }
     }
 
-    public static void userDisconnected(String userId, Session session) {
+    public static String userDisconnected(String playerId, Session session) {
       /* TODO
       1. Check if person is in queue, and remove them if so
       2. Check if person is in game, and end game if so
       3. Check if person is logged in, and log them out if so
        */
+        Player player = PlayerMongoDao.getInstance().getPlayerById(playerId);
+        if (player != null) {
+            if (player.isLoggedIn) {
+                if (player.inQueue){
+                    PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, false, false);
+                    PlayerMongoDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
+                }
+                else if (player.inGame){
+                    for (GameState game : gameList){
+                        if (game.playerOne._id == playerId || game.playerTwo._id == playerId){
+                            GameStateServerDao.getInstance().gameOver(game.gameId);
+                        }
+                    }
+                }
+                WebSocket.Response messageToReturn = new WebSocket.Response("Disconnection Successful", player._id);
+                return gson.toJson(messageToReturn);
+            } else {
+                WebSocket.Response messageToReturn = new WebSocket.Response("Disconnection Failed", "User is not logged in");
+                return gson.toJson(messageToReturn);
+            }
+        } else {
+            WebSocket.Response messageToReturn = new WebSocket.Response("Disconnection Failed", "Invalid ID");
+            return gson.toJson(messageToReturn);
+        }
     }
 }

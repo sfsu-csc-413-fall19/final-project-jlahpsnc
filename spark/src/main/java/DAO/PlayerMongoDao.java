@@ -164,6 +164,33 @@ public class PlayerMongoDao {
         }
     }
 
+    public Player updatePlayerHighScoreById(String playerId, int score){
+        try {
+            ObjectId idToSearch = new ObjectId(playerId);
+            Document foundPlayer = playerCollection.find(eq("_id", idToSearch)).first();
+            int newHighScore = (int)foundPlayer.get("highScore") + score;
+
+            if (foundPlayer != null) {
+                playerCollection.updateOne(eq("_id", idToSearch),
+                        new Document("$set", new Document("highScore", newHighScore )));
+
+                Player playerToReturn = new Player(
+                        foundPlayer.get("_id").toString(),
+                        foundPlayer.get("username").toString(),
+                        null,
+                        (int)foundPlayer.get("highScore"),
+                        (boolean)foundPlayer.get("isLoggedIn"),
+                        (boolean)foundPlayer.get("inQueue"),
+                        (boolean) foundPlayer.get("inGame"));
+                return playerToReturn;
+            }
+            return null;
+        }
+        catch(Exception e) {
+            return null;
+        }
+    }
+
     public Player updatePlayerGameStatusByUsername(String username, boolean inQueue, boolean inGame) {
         Document foundPlayer = playerCollection.find(eq("username", username)).first();
         if (foundPlayer != null) {
