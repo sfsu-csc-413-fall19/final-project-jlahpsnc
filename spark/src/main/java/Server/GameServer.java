@@ -119,25 +119,6 @@ public class GameServer {
         return gson.toJson(messageToReturn);
     }
 
-    // Adds a player to queue, given their ID and session
-    public static void addPlayerToQueue(String playerId, Session session) {
-      Player player = PlayerMongoDao.getInstance().getPlayerById(playerId);
-        if (player != null) {
-            queueList.add(new Pair<>(player, session));
-            PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, true, false);
-
-            // After adding a player to the queue, attempt to match them with someone else in the queue
-            if (queueList.size() == 2) {
-                Pair<Player, Session> playerOne = queueList.remove(0);
-                PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerOne.getKey()._id, false, false);
-                Pair<Player, Session> playerTwo = queueList.remove(0);
-                PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerTwo.getKey()._id, false, false);
-
-                createGame(playerOne, playerTwo);
-            }
-        }
-    }
-
     // Helper function to create a game, given two players and their sessions
     private static void createGame(Pair<Player, Session> playerOne, Pair<Player, Session> playerTwo) {
         GameState newGame = new GameState(generateNewGameId(), playerOne.getKey(), playerOne.getValue(),
@@ -189,6 +170,10 @@ public class GameServer {
 
       String responseType = response.responseType;
       switch (responseType) {
+          case "Play Game":
+              addPlayerToQueue(response.responseBody, session);
+              break;
+
           case "Flip Card":
               flipCard(response.responseBody);
               break;
@@ -200,8 +185,29 @@ public class GameServer {
           case "Disconnected":
               userDisconnected(response.responseBody, session);
               break;
-
       }
+    }
+
+    /* Adds a player to queue, given their ID and session
+    Format of response body must be as follows: "playerId"
+    ex: "9F1d5q7"
+    */
+    public static void addPlayerToQueue(String playerId, Session session) {
+        Player player = PlayerMongoDao.getInstance().getPlayerById(playerId);
+        if (player != null) {
+            queueList.add(new Pair<>(player, session));
+            PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, true, false);
+
+            // After adding a player to the queue, attempt to match them with someone else in the queue
+            if (queueList.size() == 2) {
+                Pair<Player, Session> playerOne = queueList.remove(0);
+                PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerOne.getKey()._id, false, false);
+                Pair<Player, Session> playerTwo = queueList.remove(0);
+                PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerTwo.getKey()._id, false, false);
+
+                createGame(playerOne, playerTwo);
+            }
+        }
     }
 
     /*
