@@ -43,10 +43,6 @@ public class GameStateServerDao {
                     increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
                     game.numPairsLeft--;
                     if (checkForGameOver(gameId)) {
-                        /* TODO
-                        Create a gameOver() function that updates the player high scores on the server
-                        gameOver() should also broadcast WebSocketHandler.gameOverBroadcast to both players.
-                         */
                         gameOver(gameId);
                     } else {
                         game.gameIsPaused = true;
@@ -79,7 +75,7 @@ public class GameStateServerDao {
         int playerOneTotalScore = 0;
         int playerTwoTotalScore = 0;
         if (game != null){
-            if (game.gameIsOver != true){
+            if (checkForGameOver(gameId) && game.gameIsOver != true){
                 game.gameIsOver = true;
                 if (game.playerOneScore > game.playerTwoScore){
                     playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);
