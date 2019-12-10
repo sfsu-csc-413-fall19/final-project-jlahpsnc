@@ -1,4 +1,4 @@
-package DTO;
+package DataObjects;
 
 public class PlayerDto implements Comparable{
     public final String _id;

@@ -1,6 +1,6 @@
 package DAO;
 
-import DTO.PlayerDto;
+import DataObjects.PlayerDto;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -12,20 +12,20 @@ import java.util.ArrayList;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class PlayerDao {
-    private static PlayerDao mongoDaoObject;
+public class PlayerMongoDao {
+    private static PlayerMongoDao mongoDaoObject;
     private MongoClient mongoClient;
     private MongoDatabase db;
     private MongoCollection<Document> playerCollection;
 
-    public static PlayerDao getInstance() {
+    public static PlayerMongoDao getInstance() {
         if (mongoDaoObject == null) {
-            mongoDaoObject = new PlayerDao();
+            mongoDaoObject = new PlayerMongoDao();
         }
         return mongoDaoObject;
     }
 
-    private PlayerDao() {
+    private PlayerMongoDao() {
         // Open connection
         mongoClient = new MongoClient("localhost", 27017);
         // Get reference to database

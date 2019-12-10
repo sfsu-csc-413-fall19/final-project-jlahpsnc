@@ -1,18 +1,18 @@
-package DTO;
+package DataObjects;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class BoardDto {
-    public CardDto[][] boardLayout;
+public class GameBoard {
+    public Card[][] boardLayout;
 
-    public BoardDto(CardDto[] cardList) {
-        CardDto[][] tempBoardLayout = new CardDto[5][5];
+    public GameBoard(Card[] cardList) {
+        Card[][] tempBoardLayout = new Card[5][5];
         int currentCard = 0;
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                CardDto tempCard = cardList[currentCard];
+                Card tempCard = cardList[currentCard];
                 tempCard.x = i;
                 tempCard.y = j;
                 tempBoardLayout[i][j] = tempCard;
@@ -22,29 +22,29 @@ public class BoardDto {
         boardLayout =  tempBoardLayout;
     }
 
-    public CardDto getCard(int x, int y) {
+    public Card getCard(int x, int y) {
         if (x >= 0 && x <= 4 && y >= 0 && y <= 4) {
             return boardLayout[x][y];
         }
         return null;
     }
 
-    public static BoardDto generateNewBoard() {
+    public static GameBoard generateNewBoard() {
         // Create a new array with 12 pairs of matching card
-        CardDto cardArray[] = new CardDto[25];
+        Card cardArray[] = new Card[25];
         for (int i = 0; i < 12; i = i + 2) {
-            cardArray[i] = new CardDto(i);
-            cardArray[i + 1] = new CardDto(i);
+            cardArray[i] = new Card(i);
+            cardArray[i + 1] = new Card(i);
         }
 
         // Add action card to cards array
-        cardArray[24] = new CardDto(99);
+        cardArray[24] = new Card(99);
 
         // Shuffle the cards array
-        List<CardDto> cardList = Arrays.asList(cardArray);
+        List<Card> cardList = Arrays.asList(cardArray);
         Collections.shuffle(cardList);
         cardList.toArray(cardArray);
 
-        return new BoardDto(cardArray);
+        return new GameBoard(cardArray);
     }
 }

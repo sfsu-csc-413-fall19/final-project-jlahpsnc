@@ -1,24 +1,23 @@
 package DAO;
 
-import DTO.CardDto;
-import DTO.GameStateDto;
+import DataObjects.GameState;
 import Server.MainServer;
 import WebSocket.WebSocketHandler;
 
-public class GameStateDao {
-    private static GameStateDao gameStateDaoObject;
+public class GameStateServerDao {
+    private static GameStateServerDao gameStateDaoObject;
 
-    private GameStateDao() {};
+    private GameStateServerDao() {};
 
-    public static GameStateDao getInstance() {
+    public static GameStateServerDao getInstance() {
         if (gameStateDaoObject == null) {
-            gameStateDaoObject = new GameStateDao();
+            gameStateDaoObject = new GameStateServerDao();
         }
         return gameStateDaoObject;
     }
 
     public boolean flipCard(int gameId, String playerAttemptingToFlipCard, int x, int y) {
-        GameStateDto game = MainServer.getGameById(gameId);
+        GameState game = MainServer.getGameById(gameId);
         if (game != null && game.currentPlayersTurn.equals(playerAttemptingToFlipCard) && game.gameBoard.getCard(x,y) != null) {
             // If the card is a joker
             if (game.gameBoard.getCard(x,y).cardId == 99) {
@@ -71,9 +70,9 @@ public class GameStateDao {
             return false;
         }
     }
-    
+
     private boolean checkForGameOver(int gameId) {
-        GameStateDto game = MainServer.getGameById(gameId);
+        GameState game = MainServer.getGameById(gameId);
         if (game != null && game.numPairsLeft <= 0) {
             return true;
         }
@@ -81,7 +80,7 @@ public class GameStateDao {
     }
 
     private boolean changeTurns(int gameId) {
-        GameStateDto game = MainServer.getGameById(gameId);
+        GameState game = MainServer.getGameById(gameId);
         if (game != null) {
             if (game.currentPlayersTurn == game.playerOne._id) {
                 game.currentPlayersTurn = game.playerTwo._id;
@@ -96,7 +95,7 @@ public class GameStateDao {
     }
 
     private boolean increasePlayerScoreByOne(int gameId, String playerId) {
-        GameStateDto game = MainServer.getGameById(gameId);
+        GameState game = MainServer.getGameById(gameId);
         if (game != null) {
             if (game.playerOne._id == playerId) {
                 game.playerOneScore = game.playerOneScore + 1;
