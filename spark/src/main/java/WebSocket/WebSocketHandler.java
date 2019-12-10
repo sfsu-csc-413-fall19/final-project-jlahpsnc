@@ -47,6 +47,19 @@ public class WebSocketHandler {
         }
     }
 
+    public static void updatePausedGame(GameStateDto game) {
+        Response response = new Response();
+        response.setResponseType("Paused Game");
+        response.setResponseBody(gson.toJson(game));
+
+        try {
+            game.playerOneSession.getRemote().sendString(gson.toJson(response));
+            game.playerTwoSession.getRemote().sendString(gson.toJson(response));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void newGameBroadcast(GameStateDto game) {
         Response response = new Response();
         response.setResponseType("New Game");
