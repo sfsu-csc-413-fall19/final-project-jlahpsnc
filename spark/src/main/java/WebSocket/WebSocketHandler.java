@@ -1,7 +1,7 @@
 package WebSocket;
 
 import DataObjects.GameState;
-import Server.MainServer;
+import Server.GameServer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -26,12 +26,12 @@ public class WebSocketHandler {
         // Reason parameter may not be userId, however, front end MUST send userId somehow
         // This may be changed, but userDisconnected() MUST be sent userId
         String userId = reason;
-        MainServer.userDisconnected(userId, session);
+        GameServer.userDisconnected(userId, session);
     }
 
     @OnWebSocketMessage
     public void message(Session session, String message) throws IOException {
-        MainServer.processMessage(message, session);
+        GameServer.processMessage(message, session);
     }
 
     public static void updateGame(GameState game) {

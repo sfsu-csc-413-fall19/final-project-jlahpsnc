@@ -10,8 +10,8 @@ public class GameState {
     public final Date startTime;
 
     // Players info
-    public final PlayerDto playerOne;
-    public final PlayerDto playerTwo;
+    public final Player playerOne;
+    public final Player playerTwo;
     public final Session playerOneSession;
     public final Session playerTwoSession;
 
@@ -26,8 +26,8 @@ public class GameState {
     public boolean gameIsPaused = false;
     public boolean gameIsOver = false;
 
-    public GameState(int gameId, PlayerDto playerOne, Session playerOneSession,
-                     PlayerDto playerTwo, Session playerTwoSession) {
+    public GameState(int gameId, Player playerOne, Session playerOneSession,
+                     Player playerTwo, Session playerTwoSession) {
         this.gameId = gameId;
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;

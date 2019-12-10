@@ -5,7 +5,7 @@ import static spark.Spark.*;
 import DAO.GameStateServerDao;
 import DAO.PlayerMongoDao;
 import DataObjects.GameState;
-import DataObjects.PlayerDto;
+import DataObjects.Player;
 import WebSocket.WebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,9 +16,9 @@ import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.*;
 
-public class MainServer {
+public class GameServer {
    // List of current players waiting in queue
-   static ArrayList<Pair<PlayerDto, Session>> queueList = new ArrayList<>();
+   static ArrayList<Pair<Player, Session>> queueList = new ArrayList<>();
 
    //List of current games going on
    static ArrayList<GameState> gameList = new ArrayList<>();
@@ -31,20 +31,20 @@ public class MainServer {
 
     webSocket("/wsLoading", WebSocketHandler.class);
 
-    post("/login", MainServer::logIn);
+    post("/login", GameServer::logIn);
 
-    post("/register", MainServer::register);
+    post("/register", GameServer::register);
 
-    get("/playerInfo", MainServer::playerInfo);
+    get("/playerInfo", GameServer::playerInfo);
 
-    get("/rankings", MainServer::rankings);
+    get("/rankings", GameServer::rankings);
     }
 
     private static String logIn(Request request, Response response) {
         String username = request.queryMap("username").value();
         String password = request.queryMap("password").value();
         if (request.queryParams().size() == 2 && username != null && password != null) {
-            PlayerDto receivedPlayer = PlayerMongoDao.getInstance().getPlayerByUsername(username);
+            Player receivedPlayer = PlayerMongoDao.getInstance().getPlayerByUsername(username);
             if (receivedPlayer != null) {
                 if (receivedPlayer.password.equals(password)) {
                     if (!receivedPlayer.isLoggedIn) {
@@ -90,7 +90,7 @@ public class MainServer {
     private static String playerInfo(Request request, Response response) {
         String playerId = request.queryMap("playerId").value();
         if (request.queryParams().size() == 1 && playerId != null) {
-            PlayerDto playerToReturn = PlayerMongoDao.getInstance().getPlayerById(playerId);
+            Player playerToReturn = PlayerMongoDao.getInstance().getPlayerById(playerId);
             if (playerToReturn != null) {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 WebSocket.Response messageToReturn = new WebSocket.Response("Player Info Success", gson.toJson(playerToReturn));
@@ -106,7 +106,7 @@ public class MainServer {
     }
 
     private static String rankings(Request request, Response response) {
-        ArrayList<PlayerDto> allPlayers = PlayerMongoDao.getInstance().getAllPlayers();
+        ArrayList<Player> allPlayers = PlayerMongoDao.getInstance().getAllPlayers();
         Collections.sort(allPlayers);
 
         int size = 10;
@@ -114,23 +114,23 @@ public class MainServer {
             size = allPlayers.size();
         }
 
-        PlayerDto[] topPlayers = allPlayers.subList(0, size).toArray(new PlayerDto[allPlayers.size()]);
+        Player[] topPlayers = allPlayers.subList(0, size).toArray(new Player[allPlayers.size()]);
         WebSocket.Response messageToReturn = new WebSocket.Response("Rankings Success", gson.toJson(topPlayers));
         return gson.toJson(messageToReturn);
     }
 
     // Adds a player to queue, given their ID and session
     public static void addPlayerToQueue(String playerId, Session session) {
-      PlayerDto player = PlayerMongoDao.getInstance().getPlayerById(playerId);
+      Player player = PlayerMongoDao.getInstance().getPlayerById(playerId);
         if (player != null) {
             queueList.add(new Pair<>(player, session));
             PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, true, false);
 
             // After adding a player to the queue, attempt to match them with someone else in the queue
             if (queueList.size() == 2) {
-                Pair<PlayerDto, Session> playerOne = queueList.remove(0);
+                Pair<Player, Session> playerOne = queueList.remove(0);
                 PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerOne.getKey()._id, false, false);
-                Pair<PlayerDto, Session> playerTwo = queueList.remove(0);
+                Pair<Player, Session> playerTwo = queueList.remove(0);
                 PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerTwo.getKey()._id, false, false);
 
                 createGame(playerOne, playerTwo);
@@ -139,7 +139,7 @@ public class MainServer {
     }
 
     // Helper function to create a game, given two players and their sessions
-    private static void createGame(Pair<PlayerDto, Session> playerOne, Pair<PlayerDto, Session> playerTwo) {
+    private static void createGame(Pair<Player, Session> playerOne, Pair<Player, Session> playerTwo) {
         GameState newGame = new GameState(generateNewGameId(), playerOne.getKey(), playerOne.getValue(),
                 playerTwo.getKey(), playerTwo.getValue());
 
@@ -225,7 +225,7 @@ public class MainServer {
     ex: "9F1d5q7"
     */
     private static String logout(String playerId) {
-        PlayerDto player = PlayerMongoDao.getInstance().getPlayerById(playerId);
+        Player player = PlayerMongoDao.getInstance().getPlayerById(playerId);
         if (player != null) {
             if (player.isLoggedIn) {
                 PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, false, false);

@@ -1,7 +1,7 @@
 package DAO;
 
 import DataObjects.GameState;
-import Server.MainServer;
+import Server.GameServer;
 import WebSocket.WebSocketHandler;
 
 public class GameStateServerDao {
@@ -17,7 +17,7 @@ public class GameStateServerDao {
     }
 
     public boolean flipCard(int gameId, String playerAttemptingToFlipCard, int x, int y) {
-        GameState game = MainServer.getGameById(gameId);
+        GameState game = GameServer.getGameById(gameId);
         if (game != null && game.currentPlayersTurn.equals(playerAttemptingToFlipCard) && game.gameBoard.getCard(x,y) != null) {
             // If the card is a joker
             if (game.gameBoard.getCard(x,y).cardId == 99) {
@@ -72,7 +72,7 @@ public class GameStateServerDao {
     }
 
     private boolean checkForGameOver(int gameId) {
-        GameState game = MainServer.getGameById(gameId);
+        GameState game = GameServer.getGameById(gameId);
         if (game != null && game.numPairsLeft <= 0) {
             return true;
         }
@@ -80,7 +80,7 @@ public class GameStateServerDao {
     }
 
     private boolean changeTurns(int gameId) {
-        GameState game = MainServer.getGameById(gameId);
+        GameState game = GameServer.getGameById(gameId);
         if (game != null) {
             if (game.currentPlayersTurn == game.playerOne._id) {
                 game.currentPlayersTurn = game.playerTwo._id;
@@ -95,7 +95,7 @@ public class GameStateServerDao {
     }
 
     private boolean increasePlayerScoreByOne(int gameId, String playerId) {
-        GameState game = MainServer.getGameById(gameId);
+        GameState game = GameServer.getGameById(gameId);
         if (game != null) {
             if (game.playerOne._id == playerId) {
                 game.playerOneScore = game.playerOneScore + 1;
