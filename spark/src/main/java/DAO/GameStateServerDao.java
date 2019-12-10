@@ -43,6 +43,10 @@ public class GameStateServerDao {
                     increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
                     game.numPairsLeft--;
                     if (checkForGameOver(gameId)) {
+                        /* TODO
+                        Create a gameOver() function that updates the player high scores on the server
+                        gameOver() should also broadcast WebSocketHandler.gameOverBroadcast to both players.
+                         */
                         game.gameIsOver = true;
                         WebSocketHandler.gameOverBroadcast(game);
                     } else {
