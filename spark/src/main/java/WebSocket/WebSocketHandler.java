@@ -40,8 +40,12 @@ public class WebSocketHandler {
         response.setResponseBody(gson.toJson(game));
 
         try {
-            game.playerOneSession.getRemote().sendString(gson.toJson(response));
-            game.playerTwoSession.getRemote().sendString(gson.toJson(response));
+            if (game.playerOneSession.isOpen()) {
+                game.playerOneSession.getRemote().sendString(gson.toJson(response));
+            }
+            if (game.playerTwoSession.isOpen()) {
+                game.playerTwoSession.getRemote().sendString(gson.toJson(response));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,8 +57,12 @@ public class WebSocketHandler {
         response.setResponseBody(gson.toJson(game));
 
         try {
-            game.playerOneSession.getRemote().sendString(gson.toJson(response));
-            game.playerTwoSession.getRemote().sendString(gson.toJson(response));
+            if (game.playerOneSession.isOpen()) {
+                game.playerOneSession.getRemote().sendString(gson.toJson(response));
+            }
+            if (game.playerTwoSession.isOpen()) {
+                game.playerTwoSession.getRemote().sendString(gson.toJson(response));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,8 +74,12 @@ public class WebSocketHandler {
         response.setResponseBody(gson.toJson(game));
 
         try {
-            game.playerOneSession.getRemote().sendString(gson.toJson(response));
-            game.playerTwoSession.getRemote().sendString(gson.toJson(response));
+            if (game.playerOneSession.isOpen()) {
+                game.playerOneSession.getRemote().sendString(gson.toJson(response));
+            }
+            if (game.playerTwoSession.isOpen()) {
+                game.playerTwoSession.getRemote().sendString(gson.toJson(response));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,8 +91,12 @@ public class WebSocketHandler {
         response.setResponseBody(gson.toJson(game));
 
         try {
-            game.playerOneSession.getRemote().sendString(gson.toJson(response));
-            game.playerTwoSession.getRemote().sendString(gson.toJson(response));
+            if (game.playerOneSession.isOpen()) {
+                game.playerOneSession.getRemote().sendString(gson.toJson(response));
+            }
+            if (game.playerTwoSession.isOpen()) {
+                game.playerTwoSession.getRemote().sendString(gson.toJson(response));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
