@@ -159,25 +159,6 @@ public class GameServer {
       return null;
     }
 
-    // Removes an ongoing game from the game list, based on the gameId
-    public static boolean removeGameById(int gameId) {
-        for (GameState game: gameList) {
-            if (game.gameId == gameId) {
-                PlayerMongoDao.getInstance().updatePlayerGameStatusById(game.playerOne._id, false, false);
-                PlayerMongoDao.getInstance().updatePlayerGameStatusById(game.playerTwo._id, false, false);
-
-                /* TODO
-                1. Update highscores (on MongoDB)
-                2. Notify players that game has ended (via websocket)
-                 */
-
-                gameList.remove(game);
-                return true;
-            }
-        }
-        return false;
-    }
-
     // Helper function to generate a new gameId, and update the count for the next game gameId
     private static int generateNewGameId() {
       totalGames++;
@@ -200,7 +181,6 @@ public class GameServer {
           case "Disconnected":
               userDisconnected(response.responseBody, session);
               break;
-
       }
     }
 
@@ -243,17 +223,13 @@ public class GameServer {
     }
 
     public static String userDisconnected(String playerId, Session session) {
-      /* TODO
-      1. Check if person is in queue, and remove them if so
-      2. Check if person is in game, and end game if so
-      3. Check if person is logged in, and log them out if so
-       */
         Player player = PlayerMongoDao.getInstance().getPlayerById(playerId);
         if (player != null) {
             if (player.isLoggedIn) {
-                if (player.inQueue){
+                if (player.inQueue && queueList.size() >  0){
                     PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, false, false);
                     PlayerMongoDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
+                    queueList.remove(0);
                 }
                 else if (player.inGame){
                     for (GameState game : gameList){
