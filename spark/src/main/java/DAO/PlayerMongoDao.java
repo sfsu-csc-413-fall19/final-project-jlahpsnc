@@ -1,6 +1,6 @@
 package DAO;
 
-import DTO.PlayerDto;
+import DataObjects.Player;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -12,20 +12,20 @@ import java.util.ArrayList;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class PlayerDao {
-    private static PlayerDao mongoDaoObject;
+public class PlayerMongoDao {
+    private static PlayerMongoDao mongoDaoObject;
     private MongoClient mongoClient;
     private MongoDatabase db;
     private MongoCollection<Document> playerCollection;
 
-    public static PlayerDao getInstance() {
+    public static PlayerMongoDao getInstance() {
         if (mongoDaoObject == null) {
-            mongoDaoObject = new PlayerDao();
+            mongoDaoObject = new PlayerMongoDao();
         }
         return mongoDaoObject;
     }
 
-    private PlayerDao() {
+    private PlayerMongoDao() {
         // Open connection
         mongoClient = new MongoClient("localhost", 27017);
         // Get reference to database
@@ -50,12 +50,12 @@ public class PlayerDao {
         }
     }
 
-    public PlayerDto getPlayerById(String id) {
+    public Player getPlayerById(String id) {
         try {
             ObjectId idToSearch = new ObjectId(id);
             Document foundPlayer = playerCollection.find(eq("_id", idToSearch)).first();
             if (foundPlayer != null) {
-                PlayerDto playerDtoToReturn = new PlayerDto(
+                Player playerToReturn = new Player(
                         foundPlayer.get("_id").toString(),
                         foundPlayer.get("username").toString(),
                         null,
@@ -63,7 +63,7 @@ public class PlayerDao {
                         (boolean)foundPlayer.get("isLoggedIn"),
                         (boolean)foundPlayer.get("inQueue"),
                         (boolean) foundPlayer.get("inGame"));
-                return playerDtoToReturn;
+                return playerToReturn;
             }
             return null;
         }
@@ -72,10 +72,10 @@ public class PlayerDao {
         }
     }
 
-    public PlayerDto getPlayerByUsername(String username) {
+    public Player getPlayerByUsername(String username) {
         Document foundPlayer = playerCollection.find(eq("username", username)).first();
         if (foundPlayer != null) {
-            PlayerDto playerDtoToReturn = new PlayerDto(
+            Player playerToReturn = new Player(
                     foundPlayer.get("_id").toString(),
                     foundPlayer.get("username").toString(),
                     foundPlayer.get("password").toString(),
@@ -83,19 +83,19 @@ public class PlayerDao {
                     (boolean)foundPlayer.get("isLoggedIn"),
                     (boolean)foundPlayer.get("inQueue"),
                     (boolean) foundPlayer.get("inGame"));
-            return playerDtoToReturn;
+            return playerToReturn;
         }
         return null;
     }
 
-    public ArrayList<PlayerDto> getAllPlayers() {
-        ArrayList<PlayerDto> playersList = new ArrayList<>();
+    public ArrayList<Player> getAllPlayers() {
+        ArrayList<Player> playersList = new ArrayList<>();
         MongoCursor<Document> cursor = playerCollection.find().iterator();
 
         try {
             while (cursor.hasNext()) {
                 Document tempDoc = cursor.next();
-                PlayerDto tempPlayer = new PlayerDto(
+                Player tempPlayer = new Player(
                         tempDoc.get("_id").toString(),
                         tempDoc.get("username").toString(),
                         null,
@@ -112,7 +112,7 @@ public class PlayerDao {
         return playersList;
     }
 
-    public PlayerDto updatePlayerGameStatusById(String id, boolean inQueue, boolean inGame) {
+    public Player updatePlayerGameStatusById(String id, boolean inQueue, boolean inGame) {
         try {
             ObjectId idToSearch = new ObjectId(id);
             Document foundPlayer = playerCollection.find(eq("_id", idToSearch)).first();
@@ -122,7 +122,7 @@ public class PlayerDao {
                 playerCollection.updateOne(eq("_id", idToSearch),
                         new Document("$set", new Document("inGame", inGame)));
 
-                PlayerDto playerDtoToReturn = new PlayerDto(
+                Player playerToReturn = new Player(
                         foundPlayer.get("_id").toString(),
                         foundPlayer.get("username").toString(),
                         null,
@@ -130,7 +130,7 @@ public class PlayerDao {
                         (boolean)foundPlayer.get("isLoggedIn"),
                         (boolean)foundPlayer.get("inQueue"),
                         (boolean) foundPlayer.get("inGame"));
-                return playerDtoToReturn;
+                return playerToReturn;
             }
             return null;
         }
@@ -139,7 +139,7 @@ public class PlayerDao {
         }
     }
 
-    public PlayerDto updatePlayerLoggedStatusById(String id, boolean isLoggedIn) {
+    public Player updatePlayerLoggedStatusById(String id, boolean isLoggedIn) {
         try {
             ObjectId idToSearch = new ObjectId(id);
             Document foundPlayer = playerCollection.find(eq("_id", idToSearch)).first();
@@ -147,7 +147,7 @@ public class PlayerDao {
                 playerCollection.updateOne(eq("_id", idToSearch),
                         new Document("$set", new Document("isLoggedIn", isLoggedIn)));
 
-                PlayerDto playerDtoToReturn = new PlayerDto(
+                Player playerToReturn = new Player(
                         foundPlayer.get("_id").toString(),
                         foundPlayer.get("username").toString(),
                         null,
@@ -155,7 +155,7 @@ public class PlayerDao {
                         (boolean)foundPlayer.get("isLoggedIn"),
                         (boolean)foundPlayer.get("inQueue"),
                         (boolean) foundPlayer.get("inGame"));
-                return playerDtoToReturn;
+                return playerToReturn;
             }
             return null;
         }
@@ -164,7 +164,7 @@ public class PlayerDao {
         }
     }
 
-    public PlayerDto updatePlayerGameStatusByUsername(String username, boolean inQueue, boolean inGame) {
+    public Player updatePlayerGameStatusByUsername(String username, boolean inQueue, boolean inGame) {
         Document foundPlayer = playerCollection.find(eq("username", username)).first();
         if (foundPlayer != null) {
             playerCollection.updateOne(eq("username", username),
@@ -172,7 +172,7 @@ public class PlayerDao {
             playerCollection.updateOne(eq("username", username),
                     new Document("$set", new Document("inGame", inGame)));
 
-            PlayerDto playerDtoToReturn = new PlayerDto(
+            Player playerToReturn = new Player(
                     foundPlayer.get("_id").toString(),
                     foundPlayer.get("username").toString(),
                     null,
@@ -180,7 +180,7 @@ public class PlayerDao {
                     (boolean)foundPlayer.get("isLoggedIn"),
                     (boolean)foundPlayer.get("inQueue"),
                     (boolean) foundPlayer.get("inGame"));
-            return playerDtoToReturn;
+            return playerToReturn;
         }
         return null;
     }

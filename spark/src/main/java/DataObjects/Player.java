@@ -1,6 +1,6 @@
-package DTO;
+package DataObjects;
 
-public class PlayerDto implements Comparable{
+public class Player implements Comparable{
     public final String _id;
     public final String username;
     public final String password;
@@ -9,7 +9,7 @@ public class PlayerDto implements Comparable{
     public final boolean inQueue;
     public final boolean inGame;
 
-    public PlayerDto(String _id, String username, String password, int highScore, boolean isLoggedIn, boolean inQueue, boolean inGame) {
+    public Player(String _id, String username, String password, int highScore, boolean isLoggedIn, boolean inQueue, boolean inGame) {
         this._id = _id;
         this.username = username;
         this.password = password;
@@ -21,7 +21,7 @@ public class PlayerDto implements Comparable{
 
     @Override
     public int compareTo(Object player) {
-        int compareScore=((PlayerDto)player).highScore;
+        int compareScore=((Player)player).highScore;
 
         /* For Descending order */
         return compareScore-this.highScore;
