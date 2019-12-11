@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Card, Row, Col } from 'flwww';
 import axios from 'axios';
 
-const UserInfo = props => {
+const UserInfo = ({ id }) => {
   const [user, setUser] = useState({});
 
   const getUserInfo = id => {
     axios
       .get(`/playerInfo?playerId=${id}`)
       .then(res => {
-        setUser(res.data);
+        setUser(JSON.parse(res.data.responseBody));
       })
       .catch(console.log);
   };
 
   useEffect(() => {
-    getUserInfo(props.id);
-  }, []);
+    getUserInfo(id);
+  }, [id]);
 
   return (
     <div>
@@ -30,7 +30,7 @@ const UserInfo = props => {
 
           <Row className='row-space-around'>
             <Col grid='5'>
-              <h3>High Score: {user.highscore}</h3>
+              <h3>High Score: {user.highScore}</h3>
             </Col>
             <Col grid='4'>
               <h3>Ranking: #1</h3>
