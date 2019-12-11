@@ -36,7 +36,7 @@ public class GameStateServerDao {
             else if (game.cardFlipped == null) {
                 game.gameBoard.getCard(x, y).isRevealed = true;
                 game.cardFlipped = game.gameBoard.getCard(x, y);
-                WebSocketHandler.updateGame(game);
+                WebSocketHandler.updateGameBroadcast(game);
             }
             // If a card has been flipped before, then we need to check if this new card bring flipped matches it
             else {

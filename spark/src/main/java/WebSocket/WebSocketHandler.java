@@ -22,12 +22,7 @@ public class WebSocketHandler {
     @OnWebSocketClose
     public void closed(Session session, int statusCode, String reason) throws IOException{
         System.out.println("A client has disconnected");
-
-        // Ask Niko
-        // Reason parameter may not be userId, however, front end MUST send userId somehow
-        // This may be changed, but userDisconnected() MUST be sent userId
-        String userId = reason;
-        GameServer.userDisconnected(userId, session);
+        System.out.println(reason);
     }
 
     @OnWebSocketMessage
@@ -36,11 +31,21 @@ public class WebSocketHandler {
         System.out.println(message);
     }
 
-    public static void updateGame(GameState game) {
+    public static void updateGame(GameState game, Session session) {
         ResponseTemplate response = new ResponseTemplate();
-        response.setResponseType("Update Game");
         response.setResponseBody(gson.toJson(game.getGameStateDto()));
+        try {
+            if (session.isOpen()) {
+                session.getRemote().sendString(gson.toJson(response));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public static void updateGameBroadcast(GameState game) {
+        ResponseTemplate response = new ResponseTemplate();
+        response.setResponseBody(gson.toJson(game.getGameStateDto()));
         try {
             if (game.playerOneSession.isOpen()) {
                 game.playerOneSession.getRemote().sendString(gson.toJson(response));
@@ -57,7 +62,6 @@ public class WebSocketHandler {
         ResponseTemplate response = new ResponseTemplate();
         response.setResponseType("Paused Game");
         response.setResponseBody(gson.toJson(game.getGameStateDto()));
-
         try {
             if (game.playerOneSession.isOpen()) {
                 game.playerOneSession.getRemote().sendString(gson.toJson(response));

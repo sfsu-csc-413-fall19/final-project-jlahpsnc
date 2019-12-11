@@ -181,7 +181,7 @@ public class GameServer {
               break;
 
           case "Get Game":
-              getGameState(response.responseBody);
+              getGameState(response.responseBody, session);
               break;
 
           case "Logout":
@@ -199,10 +199,10 @@ public class GameServer {
     Format of response body must be as follows: "gameId"
     ex: "12"
      */
-    public static void getGameState(String gameId) {
+    public static void getGameState(String gameId, Session session) {
         GameState game = getGameById(Integer.parseInt(gameId));
         if (game != null) {
-            WebSocketHandler.updateGame(game);
+            WebSocketHandler.updateGame(game, session);
         }
     }
 
