@@ -37,4 +37,47 @@ public class GameState {
         this.gameBoard = GameBoard.generateNewBoard();
         this.currentPlayersTurn = playerOne._id;
     }
+
+    public GameStateDto getGameStateDto() {
+        GameStateDto gameToReturn = new GameStateDto(this.gameId, this.playerOne, this.playerTwo,
+                this.gameBoard, this.currentPlayersTurn, this.playerOneScore, this.playerTwoScore,
+                this.numPairsLeft, this.jokerIsRevealed, this.gameIsPaused, this.gameIsOver);
+
+        return gameToReturn;
+    }
+
+    private class GameStateDto {
+        // Passive game info
+        public final int gameId;
+        public final Player playerOne;
+        public final Player playerTwo;
+        public final GameBoard gameBoard;
+        public final String currentPlayersTurn;  // Must be the ID of the player
+        public final int playerOneScore;
+        public final int playerTwoScore;
+        public final int numPairsLeft;
+        public final boolean jokerIsRevealed;
+        public final boolean gameIsPaused;
+        public final boolean gameIsOver;
+
+        private GameStateDto(int gameId, Player playerOne, Player playerTwo,
+                             GameBoard gameBoard, String currentPlayersTurn, int playerOneScore,
+                             int playerTwoScore, int numPairsLeft, boolean jokerIsRevealed,
+                             boolean gameIsPaused, boolean gameIsOver) {
+            this.gameId = gameId;
+            // Set password to null for both players
+            this.playerOne = new Player(playerOne._id, playerOne.username, null, playerOne.highScore,
+                    playerOne.isLoggedIn, playerOne.inQueue, playerOne.inQueue);
+            this.playerTwo = new Player(playerTwo._id, playerTwo.username, null, playerTwo.highScore,
+                    playerTwo.isLoggedIn, playerTwo.inQueue, playerTwo.inQueue);
+            this.gameBoard = gameBoard;
+            this.currentPlayersTurn = currentPlayersTurn;
+            this.playerOneScore = playerOneScore;
+            this.playerTwoScore = playerTwoScore;
+            this.numPairsLeft = numPairsLeft;
+            this.jokerIsRevealed = jokerIsRevealed;
+            this.gameIsPaused = gameIsPaused;
+            this.gameIsOver = gameIsOver;
+        }
+    }
 }

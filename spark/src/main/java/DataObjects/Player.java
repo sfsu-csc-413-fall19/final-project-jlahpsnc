@@ -9,7 +9,8 @@ public class Player implements Comparable{
     public final boolean inQueue;
     public final boolean inGame;
 
-    public Player(String _id, String username, String password, int highScore, boolean isLoggedIn, boolean inQueue, boolean inGame) {
+    public Player(String _id, String username, String password, int highScore,
+                  boolean isLoggedIn, boolean inQueue, boolean inGame) {
         this._id = _id;
         this.username = username;
         this.password = password;
