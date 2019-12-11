@@ -33,11 +33,11 @@ const register = dispatch => {
     axios
       .post(`/register?username=${username}&password=${password}`)
       .then(res => {
-        if (res.data === 'Player already exists') {
-          dispatch({ type: 'add_error', payload: 'Player already exists' });
+        if (res.data.responseType === 'Register Failed') {
+          dispatch({ type: 'add_error', payload: res.data.responseBody });
         } else {
-          localStorage.setItem('id', res.data);
-          dispatch({ type: 'add_user', payload: res.data });
+          localStorage.setItem('id', res.data.responseBody);
+          dispatch({ type: 'add_user', payload: res.data.responseBody });
           history.push('/home');
         }
       })
