@@ -53,14 +53,11 @@ const login = dispatch => {
     axios
       .post(`/login?username=${username}&password=${password}`)
       .then(res => {
-        if (
-          res.data === 'Incorrect Password' ||
-          res.data === 'Player not found'
-        ) {
-          dispatch({ type: 'add_error', payload: res.data });
+        if (res.data.responseType === 'Login Failed') {
+          dispatch({ type: 'add_error', payload: res.data.responseBody });
         } else {
-          localStorage.setItem('id', res.data);
-          dispatch({ type: 'add_user', payload: res.data });
+          localStorage.setItem('id', res.data.responseBody);
+          dispatch({ type: 'add_user', payload: res.data.responseBody });
           history.push('/home');
         }
       })
@@ -74,10 +71,10 @@ const logout = dispatch => {
     //if signed up, modify our state
     //if signed up fail reflect error message
     axios
-      .post(`/quit?playerId=${id}`)
+      .post(`/logout?playerId=${id}`)
       .then(res => {
-        if (res.data === 'Player was logged out') {
-          dispatch({ type: 'quit', payload: res.data });
+        if (res.data.responseType === 'Logout Success') {
+          dispatch({ type: 'quit', payload: res.data.responseBody });
           localStorage.removeItem('id');
           history.push('/');
         }
