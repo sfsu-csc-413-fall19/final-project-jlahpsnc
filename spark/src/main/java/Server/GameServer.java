@@ -267,6 +267,12 @@ public class GameServer {
         }
     }
 
+    public static void removeGame(GameState game){
+        if (game.gameIsOver) {
+            gameList.remove(game);
+        }
+    }
+
     public static String userDisconnected(String playerId, Session session) {
         Player player = PlayerMongoDao.getInstance().getPlayerById(playerId);
         if (player != null) {
@@ -279,7 +285,6 @@ public class GameServer {
                 else if (player.inGame){
                     for (GameState game : gameList){
                         if (game.playerOne._id == playerId || game.playerTwo._id == playerId){
-                            game.gameIsOver = true;
                             GameStateServerDao.getInstance().endGame(game.gameId);
                         }
                     }
