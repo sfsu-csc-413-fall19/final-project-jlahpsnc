@@ -25,7 +25,10 @@ public class GameStateServerDao {
                 game.gameBoard.getCard(x,y).isRevealed = true;
                 game.jokerIsRevealed = true;
                 game.gameIsPaused = true;
+                String currentPlayersTurn = game.currentPlayersTurn;
+                game.currentPlayersTurn = null;
                 WebSocketHandler.updatePausedGame(game);
+                game.currentPlayersTurn = currentPlayersTurn;
                 game.gameIsPaused = false;
                 game.gameBoard.getCard(x,y).isOffBoard = true;
             }
@@ -46,7 +49,10 @@ public class GameStateServerDao {
                         gameOver(gameId);
                     } else {
                         game.gameIsPaused = true;
+                        String currentPlayersTurn = game.currentPlayersTurn;
+                        game.currentPlayersTurn = null;
                         WebSocketHandler.updatePausedGame(game);
+                        game.currentPlayersTurn = currentPlayersTurn;
                         game.gameIsPaused = false;
                         game.gameBoard.getCard(game.cardFlipped.x, game.cardFlipped.y).isOffBoard = true;
                         game.gameBoard.getCard(x, y).isOffBoard = true;
@@ -56,9 +62,12 @@ public class GameStateServerDao {
                 // If the second card being flipped does not match the already flipped card
                 else {
                     game.gameBoard.getCard(x,y).isRevealed = true;
-                    changeTurns(gameId);
                     game.gameIsPaused = true;
+                    String currentPlayersTurn = game.currentPlayersTurn;
+                    game.currentPlayersTurn = null;
                     WebSocketHandler.updatePausedGame(game);
+                    game.currentPlayersTurn = currentPlayersTurn;
+                    changeTurns(gameId);
                     game.gameBoard.getCard(x,y).isRevealed = false;
                     game.gameIsPaused = false;
                     game.cardFlipped = null;
