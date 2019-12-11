@@ -21,12 +21,14 @@ const Loadingpage = () => {
         setGameState(jsonBody);
         setCards(jsonBody.gameBoard.boardLayout);
         setScreenId('Game Board');
-
         break;
       case 'Paused Game':
         console.log('PAUSED GAME: ');
         setGameState(jsonBody);
         setCards(jsonBody.gameBoard.boardLayout);
+        setTimeout(() => {
+          ws.current.send(messageBuilder('Get Game', jsonBody.gameId));
+        }, 2000);
         break;
       case 'Update Game':
         console.log('THE GAME HAS BEEN UPDATED. NO PRINTING');
@@ -84,12 +86,12 @@ const Loadingpage = () => {
       return (
         <Col grid='2' key={j}>
           {!cardInfo.isOffBoard && (
-            // <Card style={{ height: '100px' }} cardInfo={cardInfo} ws={ws} />
             <Card
               info={cardInfo}
               ws={ws}
               gameId={gameState.gameId}
               currentPlayersTurn={gameState.currentPlayersTurn}
+              cardId={gameState.cardId}
             >
               Hello world
             </Card>
