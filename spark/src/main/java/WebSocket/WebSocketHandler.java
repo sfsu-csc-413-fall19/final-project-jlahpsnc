@@ -1,7 +1,7 @@
 package WebSocket;
 
 import DataObjects.GameState;
-import ResponseTemplate.Response;
+import Response.ResponseTemplate;
 import Server.GameServer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,7 +36,7 @@ public class WebSocketHandler {
     }
 
     public static void updateGame(GameState game) {
-        Response response = new Response();
+        ResponseTemplate response = new ResponseTemplate();
         response.setResponseType("Update Game");
         response.setResponseBody(gson.toJson(game.getGameStateDto()));
 
@@ -53,7 +53,7 @@ public class WebSocketHandler {
     }
 
     public static void updatePausedGame(GameState game) {
-        Response response = new Response();
+        ResponseTemplate response = new ResponseTemplate();
         response.setResponseType("Paused Game");
         response.setResponseBody(gson.toJson(game.getGameStateDto()));
 
@@ -70,7 +70,7 @@ public class WebSocketHandler {
     }
 
     public static void newGameBroadcast(GameState game) {
-        Response response = new Response();
+        ResponseTemplate response = new ResponseTemplate();
         response.setResponseType("New Game");
         response.setResponseBody(gson.toJson(game.getGameStateDto()));
 
@@ -87,7 +87,7 @@ public class WebSocketHandler {
     }
 
     public static void gameOverBroadcast(GameState game) {
-        Response response = new Response();
+        ResponseTemplate response = new ResponseTemplate();
         response.setResponseType("Game Over");
         response.setResponseBody(gson.toJson(game.getGameStateDto()));
 
