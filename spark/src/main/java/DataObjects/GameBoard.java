@@ -32,7 +32,7 @@ public class GameBoard {
     public static GameBoard generateNewBoard() {
         // Create a new array with 12 pairs of matching card
         Card cardArray[] = new Card[25];
-        for (int i = 0; i < 12; i = i + 2) {
+        for (int i = 0; i < 24; i = i + 2) {
             cardArray[i] = new Card(i);
             cardArray[i + 1] = new Card(i);
         }

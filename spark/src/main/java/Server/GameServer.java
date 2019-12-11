@@ -181,6 +181,9 @@ public class GameServer {
               flipCard(response.responseBody);
               break;
 
+          case "Get Game":
+              getGameState(response.responseBody);
+
           case "Logout":
               logoutViaWebsocket(response.responseBody);
               break;
@@ -191,7 +194,20 @@ public class GameServer {
       }
     }
 
-    /* Adds a player to queue, given their ID and session
+    /*
+    Get the game via websocket
+    Format of response body must be as follows: "gameId"
+    ex: "12"
+     */
+    public static void getGameState(String gameId) {
+        GameState game = getGameById(Integer.parseInt(gameId));
+        if (game != null) {
+            WebSocketHandler.updateGame(game);
+        }
+    }
+
+    /*
+    Adds a player to queue, given their ID and session
     Format of response body must be as follows: "playerId"
     ex: "9F1d5q7"
     */
