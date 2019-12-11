@@ -86,14 +86,13 @@ public class GameStateServerDao {
             int playerOneTotalScore = 0;
             int playerTwoTotalScore = 0;
             game.gameIsOver = true;
-            // If one or more player is gone
-            if (!game.playerOne.isLoggedIn || !game.playerTwo.isLoggedIn) {
-                if (!game.playerOne.isLoggedIn) {
-                    playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, true);
-                }
-                if (!game.playerTwo.isLoggedIn) {
-                    playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);
-                }
+            // If the first player has left the game
+            if (!game.playerOne.isLoggedIn && game.playerTwo.isLoggedIn) {
+                playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, true);
+            }
+            // If the second player has left the game
+            else if (!game.playerTwo.isLoggedIn && game.playerOne.isLoggedIn) {
+                playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);
             }
             // If both players are still in game
             else {
@@ -125,12 +124,16 @@ public class GameStateServerDao {
         }
     }
 
-    private int finalPlayerScore (int numOfPairs, boolean winner){
+    private int finalPlayerScore (int numOfPairs, Boolean winner){
         int winningBonus = 500;
         int tryingBonus = 100;
         int pairMultiplier = 100;
+        int tiedBonus = 200;
 
-        if (winner){
+        if (winner == null) {
+            return numOfPairs * pairMultiplier + tiedBonus;
+        }
+        else if (winner){
             return numOfPairs * pairMultiplier + winningBonus;
         }
         return numOfPairs * pairMultiplier + tryingBonus;
