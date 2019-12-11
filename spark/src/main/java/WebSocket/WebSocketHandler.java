@@ -33,6 +33,7 @@ public class WebSocketHandler {
 
     public static void updateGame(GameState game, Session session) {
         ResponseTemplate response = new ResponseTemplate();
+        response.setResponseType("Update Game");
         response.setResponseBody(gson.toJson(game.getGameStateDto()));
         try {
             if (session.isOpen()) {
@@ -45,6 +46,7 @@ public class WebSocketHandler {
 
     public static void updateGameBroadcast(GameState game) {
         ResponseTemplate response = new ResponseTemplate();
+        response.setResponseType("Update Game");
         response.setResponseBody(gson.toJson(game.getGameStateDto()));
         try {
             if (game.playerOneSession.isOpen()) {
