@@ -10,8 +10,8 @@ public class GameState {
     public final Date startTime;
 
     // Players info
-    public final Player playerOne;
-    public final Player playerTwo;
+    public Player playerOne;
+    public Player playerTwo;
     public final Session playerOneSession;
     public final Session playerTwoSession;
 

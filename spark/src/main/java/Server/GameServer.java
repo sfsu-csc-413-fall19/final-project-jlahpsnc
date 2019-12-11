@@ -185,7 +185,7 @@ public class GameServer {
               getGameState(response.responseBody);
 
           case "Logout":
-              logoutViaWebsocket(response.responseBody);
+              logoutViaWebsocket(response.responseBody, session);
               break;
 
           case "Disconnected":
@@ -249,21 +249,21 @@ public class GameServer {
     Format of response body must be as follows: "playerId"
     ex: "9F1d5q7"
     */
-    private static String logoutViaWebsocket(String playerId) {
+    private static void logoutViaWebsocket(String playerId, Session session) {
         Player player = PlayerMongoDao.getInstance().getPlayerById(playerId);
+        ResponseTemplate messageToReturn;
         if (player != null) {
             if (player.isLoggedIn) {
                 PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, false, false);
                 PlayerMongoDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
-                ResponseTemplate messageToReturn = new ResponseTemplate("Logout Success", player._id);
-                return gson.toJson(messageToReturn);
+                messageToReturn = new ResponseTemplate("Logout Success", player._id);
             } else {
-                ResponseTemplate messageToReturn = new ResponseTemplate("Logout Failed", "User is not logged in");
-                return gson.toJson(messageToReturn);
+                messageToReturn = new ResponseTemplate("Logout Failed", "User is not logged in");
             }
+            WebSocketHandler.LogoutBroadcast(messageToReturn, session);
         } else {
-            ResponseTemplate messageToReturn = new ResponseTemplate("Logout Failed", "Invalid ID");
-            return gson.toJson(messageToReturn);
+            messageToReturn = new ResponseTemplate("Logout Failed", "Invalid ID");
+            WebSocketHandler.LogoutBroadcast(messageToReturn, session);
         }
     }
 
@@ -273,31 +273,30 @@ public class GameServer {
         }
     }
 
-    public static String userDisconnected(String playerId, Session session) {
+    public static void userDisconnected(String playerId, Session session) {
         Player player = PlayerMongoDao.getInstance().getPlayerById(playerId);
         if (player != null) {
             if (player.isLoggedIn) {
-                if (player.inQueue && queueList.size() >  0){
+                if (player.inQueue && queueList.size() > 0){
                     PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, false, false);
                     PlayerMongoDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
                     queueList.remove(0);
                 }
                 else if (player.inGame){
+                    PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, false, false);
+                    PlayerMongoDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
                     for (GameState game : gameList){
-                        if (game.playerOne._id == playerId || game.playerTwo._id == playerId){
+                        if (game.playerOne._id == playerId){
+                            game.playerOne = PlayerMongoDao.getInstance().getPlayerById(playerId);
+                            GameStateServerDao.getInstance().endGame(game.gameId);
+                        }
+                        else if (game.playerTwo._id == playerId){
+                            game.playerTwo = PlayerMongoDao.getInstance().getPlayerById(playerId);
                             GameStateServerDao.getInstance().endGame(game.gameId);
                         }
                     }
                 }
-                ResponseTemplate messageToReturn = new ResponseTemplate("Disconnection Successful", player._id);
-                return gson.toJson(messageToReturn);
-            } else {
-                ResponseTemplate messageToReturn = new ResponseTemplate("Disconnection Failed", "User is not logged in");
-                return gson.toJson(messageToReturn);
             }
-        } else {
-            ResponseTemplate messageToReturn = new ResponseTemplate("Disconnection Failed", "Invalid ID");
-            return gson.toJson(messageToReturn);
         }
     }
 }
