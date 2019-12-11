@@ -1,22 +1,22 @@
-package ResponseTemplate;
+package Response;
 
-public class Response {
+public class ResponseTemplate {
     public String responseType;
     public String responseBody;
 
-    public Response(){};
+    public ResponseTemplate(){};
 
-    public Response(String responseType, String responseBody) {
+    public ResponseTemplate(String responseType, String responseBody) {
         this.responseType = responseType;
         this.responseBody = responseBody;
     }
 
-    public Response setResponseType (String responseType) {
+    public ResponseTemplate setResponseType (String responseType) {
         this.responseType = responseType;
         return this;
     }
 
-    public Response setResponseBody (String responseBody) {
+    public ResponseTemplate setResponseBody (String responseBody) {
         this.responseBody = responseBody;
         return this;
     }

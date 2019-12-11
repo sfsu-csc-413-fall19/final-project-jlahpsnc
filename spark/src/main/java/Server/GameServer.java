@@ -6,6 +6,7 @@ import DAO.GameStateServerDao;
 import DAO.PlayerMongoDao;
 import DataObjects.GameState;
 import DataObjects.Player;
+import Response.ResponseTemplate;
 import WebSocket.WebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,22 +52,22 @@ public class GameServer {
                 if (receivedPlayer.password.equals(password)) {
                     if (!receivedPlayer.isLoggedIn) {
                         PlayerMongoDao.getInstance().updatePlayerLoggedStatusById(receivedPlayer._id, true);
-                        ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Login Success", receivedPlayer._id);
+                        ResponseTemplate messageToReturn = new ResponseTemplate("Login Success", receivedPlayer._id);
                         return gson.toJson(messageToReturn);
                     } else {
-                        ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Login Failed", "User is logged in");
+                        ResponseTemplate messageToReturn = new ResponseTemplate("Login Failed", "User is logged in");
                         return gson.toJson(messageToReturn);
                     }
                 } else {
-                    ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Login Failed", "Invalid password");
+                    ResponseTemplate messageToReturn = new ResponseTemplate("Login Failed", "Invalid password");
                     return gson.toJson(messageToReturn);
                 }
             } else {
-                ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Login Failed", "Invalid username");
+                ResponseTemplate messageToReturn = new ResponseTemplate("Login Failed", "Invalid username");
                 return gson.toJson(messageToReturn);
             }
         } else {
-            ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Login Failed", "Invalid query");
+            ResponseTemplate messageToReturn = new ResponseTemplate("Login Failed", "Invalid query");
             return gson.toJson(messageToReturn);
         }
     }
@@ -77,14 +78,14 @@ public class GameServer {
         if (request.queryParams().size() == 2 && username != null && password != null) {
             String newUserId = PlayerMongoDao.getInstance().addPlayerToDatabase(username, password);
             if (newUserId != null) {
-                ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Register Success", newUserId);
+                ResponseTemplate messageToReturn = new ResponseTemplate("Register Success", newUserId);
                 return gson.toJson(messageToReturn);
             } else {
-                ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Register Failed", "Invalid username");
+                ResponseTemplate messageToReturn = new ResponseTemplate("Register Failed", "Invalid username");
                 return gson.toJson(messageToReturn);
             }
         } else {
-            ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Register Failed", "Invalid query");
+            ResponseTemplate messageToReturn = new ResponseTemplate("Register Failed", "Invalid query");
             return gson.toJson(messageToReturn);
         }
     }
@@ -95,14 +96,14 @@ public class GameServer {
             Player playerToReturn = PlayerMongoDao.getInstance().getPlayerById(playerId);
             if (playerToReturn != null) {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Player Info Success", gson.toJson(playerToReturn));
+                ResponseTemplate messageToReturn = new ResponseTemplate("Player Info Success", gson.toJson(playerToReturn));
                 return gson.toJson(messageToReturn);
             } else {
-                ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Player Info Failed", "Invalid ID");
+                ResponseTemplate messageToReturn = new ResponseTemplate("Player Info Failed", "Invalid ID");
                 return gson.toJson(messageToReturn);
             }
         } else {
-            ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Player Info Failed", "Invalid query");
+            ResponseTemplate messageToReturn = new ResponseTemplate("Player Info Failed", "Invalid query");
             return gson.toJson(messageToReturn);
         }
     }
@@ -114,14 +115,14 @@ public class GameServer {
             if (player.isLoggedIn) {
                 PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, false, false);
                 PlayerMongoDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
-                ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Logout Success", player._id);
+                ResponseTemplate messageToReturn = new ResponseTemplate("Logout Success", player._id);
                 return gson.toJson(messageToReturn);
             } else {
-                ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Logout Failed", "User is not logged in");
+                ResponseTemplate messageToReturn = new ResponseTemplate("Logout Failed", "User is not logged in");
                 return gson.toJson(messageToReturn);
             }
         } else {
-            ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Logout Failed", "Invalid ID");
+            ResponseTemplate messageToReturn = new ResponseTemplate("Logout Failed", "Invalid ID");
             return gson.toJson(messageToReturn);
         }
     }
@@ -136,7 +137,7 @@ public class GameServer {
         }
 
         Player[] topPlayers = allPlayers.subList(0, size).toArray(new Player[allPlayers.size()]);
-        ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Rankings Success", gson.toJson(topPlayers));
+        ResponseTemplate messageToReturn = new ResponseTemplate("Rankings Success", gson.toJson(topPlayers));
         return gson.toJson(messageToReturn);
     }
 
@@ -168,7 +169,7 @@ public class GameServer {
     }
 
     public static void processMessage(String message, Session session) {
-      ResponseTemplate.Response response = gson.fromJson(message, ResponseTemplate.Response.class);
+      ResponseTemplate response = gson.fromJson(message, ResponseTemplate.class);
 
       String responseType = response.responseType;
       switch (responseType) {
@@ -238,14 +239,14 @@ public class GameServer {
             if (player.isLoggedIn) {
                 PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, false, false);
                 PlayerMongoDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
-                ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Logout Success", player._id);
+                ResponseTemplate messageToReturn = new ResponseTemplate("Logout Success", player._id);
                 return gson.toJson(messageToReturn);
             } else {
-                ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Logout Failed", "User is not logged in");
+                ResponseTemplate messageToReturn = new ResponseTemplate("Logout Failed", "User is not logged in");
                 return gson.toJson(messageToReturn);
             }
         } else {
-            ResponseTemplate.Response messageToReturn = new ResponseTemplate.Response("Logout Failed", "Invalid ID");
+            ResponseTemplate messageToReturn = new ResponseTemplate("Logout Failed", "Invalid ID");
             return gson.toJson(messageToReturn);
         }
     }
@@ -266,14 +267,14 @@ public class GameServer {
                         }
                     }
                 }
-                WebSocket.Response messageToReturn = new WebSocket.Response("Disconnection Successful", player._id);
+                ResponseTemplate messageToReturn = new ResponseTemplate("Disconnection Successful", player._id);
                 return gson.toJson(messageToReturn);
             } else {
-                WebSocket.Response messageToReturn = new WebSocket.Response("Disconnection Failed", "User is not logged in");
+                ResponseTemplate messageToReturn = new ResponseTemplate("Disconnection Failed", "User is not logged in");
                 return gson.toJson(messageToReturn);
             }
         } else {
-            WebSocket.Response messageToReturn = new WebSocket.Response("Disconnection Failed", "Invalid ID");
+            ResponseTemplate messageToReturn = new ResponseTemplate("Disconnection Failed", "Invalid ID");
             return gson.toJson(messageToReturn);
         }
     }
