@@ -46,7 +46,6 @@ public class GameStateServerDao {
                     increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
                     game.numPairsLeft--;
                     if (checkForGameOver(gameId)) {
-                        game.gameIsOver = true;
                         endGame(gameId);
                     } else {
                         game.gameIsPaused = true;
