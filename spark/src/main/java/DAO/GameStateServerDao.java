@@ -43,12 +43,7 @@ public class GameStateServerDao {
                     increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
                     game.numPairsLeft--;
                     if (checkForGameOver(gameId)) {
-                        /* TODO
-                        Create a gameOver() function that updates the player high scores on the server
-                        gameOver() should also broadcast WebSocketHandler.gameOverBroadcast to both players.
-                         */
-                        game.gameIsOver = true;
-                        WebSocketHandler.gameOverBroadcast(game);
+                        gameOver(gameId);
                     } else {
                         game.gameIsPaused = true;
                         WebSocketHandler.updatePausedGame(game);
@@ -73,6 +68,47 @@ public class GameStateServerDao {
         } else {
             return false;
         }
+    }
+
+    public void gameOver(int gameId) {
+        GameState game = GameServer.getGameById(gameId);
+        int playerOneTotalScore = 0;
+        int playerTwoTotalScore = 0;
+        if (game != null){
+            if (checkForGameOver(gameId) && game.gameIsOver != true){
+                game.gameIsOver = true;
+                if (game.playerOneScore > game.playerTwoScore){
+                    playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);
+                    playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, false);
+                }
+                else{
+                    playerOneTotalScore = finalPlayerScore(game.playerOneScore, false);
+                    playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, true);
+                }
+                // update scores
+                PlayerMongoDao.getInstance().updatePlayerHighScoreById(game.playerOne._id, playerOneTotalScore);
+                PlayerMongoDao.getInstance().updatePlayerHighScoreById(game.playerTwo._id, playerTwoTotalScore);
+                // update player status
+                PlayerMongoDao.getInstance().updatePlayerGameStatusById(game.playerOne._id, false, false);
+                PlayerMongoDao.getInstance().updatePlayerGameStatusById(game.playerTwo._id, false, false);
+                // update final score in game
+                game.playerOneScore = playerOneTotalScore;
+                game.playerTwoScore = playerTwoTotalScore;
+
+                WebSocketHandler.gameOverBroadcast(game);
+            }
+        }
+    }
+
+    private int finalPlayerScore (int numOfPairs, boolean winner){
+        int winningBonus = 500;
+        int tryingBonus = 100;
+        int pairMultiplier = 100;
+
+        if (winner){
+            return numOfPairs * pairMultiplier + winningBonus;
+        }
+        return numOfPairs * pairMultiplier + tryingBonus;
     }
 
     private boolean checkForGameOver(int gameId) {
