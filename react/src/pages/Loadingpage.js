@@ -12,7 +12,6 @@ const Loadingpage = () => {
   const ws = React.useRef(wsSession);
 
   const messageHandler = message => {
-    // debugger;
     const jsonBody = JSON.parse(message.responseBody);
     switch (message.responseType) {
       case 'New Game':
@@ -110,7 +109,15 @@ const Loadingpage = () => {
         <Container>
           <Row className='row-style'>
             <Col grid='4'>
-              <h1>Player 2: {gameState.playerTwo.username}</h1>
+              <h1
+                style={
+                  gameState.playerTwo._id === gameState.currentPlayersTurn
+                    ? { color: 'green' }
+                    : null
+                }
+              >
+                {gameState.playerTwo.username}
+              </h1>
             </Col>
             <Col grid='4'>
               <h1>Score: {gameState.playerTwoScore}</h1>
@@ -119,7 +126,15 @@ const Loadingpage = () => {
           <div className='gameContainer'>{rows}</div>
           <Row className='row-style'>
             <Col grid='4'>
-              <h1>Player 1: {gameState.playerOne.username}</h1>
+              <h1
+                style={
+                  gameState.playerOne._id === gameState.currentPlayersTurn
+                    ? { color: 'green' }
+                    : null
+                }
+              >
+                {gameState.playerOne.username}
+              </h1>
             </Col>
             <Col grid='4'>
               <h1>Score: {gameState.playerOneScore}</h1>
