@@ -82,25 +82,40 @@ public class GameStateServerDao {
 
     public void endGame(int gameId) {
         GameState game = GameServer.getGameById(gameId);
-        int playerOneTotalScore = 0;
-        int playerTwoTotalScore = 0;
         if (game != null){
+            int playerOneTotalScore = 0;
+            int playerTwoTotalScore = 0;
             game.gameIsOver = true;
-            if (game.playerOneScore > game.playerTwoScore){
-                playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);
-                playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, false);
-            }
-            else{
-                playerOneTotalScore = finalPlayerScore(game.playerOneScore, false);
+            // If the first player has left the game
+            if (!game.playerOne.isLoggedIn && game.playerTwo.isLoggedIn) {
                 playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, true);
             }
-            // update scores
+            // If the second player has left the game
+            else if (!game.playerTwo.isLoggedIn && game.playerOne.isLoggedIn) {
+                playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);
+            }
+            // If both players are still in game
+            else {
+                if (game.playerOneScore == game.playerTwoScore) {
+                    playerOneTotalScore = finalPlayerScore(game.playerOneScore, null);
+                    playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, null);
+                }
+                else if (game.playerOneScore > game.playerTwoScore){
+                    playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);
+                    playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, false);
+                }
+                else {
+                    playerOneTotalScore = finalPlayerScore(game.playerOneScore, false);
+                    playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, true);
+                }
+            }
+            // Update scores in database
             PlayerMongoDao.getInstance().updatePlayerHighScoreById(game.playerOne._id, playerOneTotalScore);
             PlayerMongoDao.getInstance().updatePlayerHighScoreById(game.playerTwo._id, playerTwoTotalScore);
-            // update player status
+            // Update player status in database
             PlayerMongoDao.getInstance().updatePlayerGameStatusById(game.playerOne._id, false, false);
             PlayerMongoDao.getInstance().updatePlayerGameStatusById(game.playerTwo._id, false, false);
-            // update final score in game
+            // Update final score in game
             game.playerOneScore = playerOneTotalScore;
             game.playerTwoScore = playerTwoTotalScore;
 
@@ -109,12 +124,16 @@ public class GameStateServerDao {
         }
     }
 
-    private int finalPlayerScore (int numOfPairs, boolean winner){
+    private int finalPlayerScore (int numOfPairs, Boolean winner){
         int winningBonus = 500;
         int tryingBonus = 100;
         int pairMultiplier = 100;
+        int tiedBonus = 200;
 
-        if (winner){
+        if (winner == null) {
+            return numOfPairs * pairMultiplier + tiedBonus;
+        }
+        else if (winner){
             return numOfPairs * pairMultiplier + winningBonus;
         }
         return numOfPairs * pairMultiplier + tryingBonus;
