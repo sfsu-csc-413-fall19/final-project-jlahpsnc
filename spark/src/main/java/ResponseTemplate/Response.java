@@ -1,4 +1,4 @@
-package WebSocket;
+package ResponseTemplate;
 
 public class Response {
     public String responseType;
