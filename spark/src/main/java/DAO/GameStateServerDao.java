@@ -46,7 +46,7 @@ public class GameStateServerDao {
                     increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
                     game.numPairsLeft--;
                     if (checkForGameOver(gameId)) {
-                        gameOver(gameId);
+                        endGame(gameId);
                     } else {
                         game.gameIsPaused = true;
                         String currentPlayersTurn = game.currentPlayersTurn;
@@ -69,6 +69,7 @@ public class GameStateServerDao {
                     game.currentPlayersTurn = currentPlayersTurn;
                     changeTurns(gameId);
                     game.gameBoard.getCard(x,y).isRevealed = false;
+                    game.gameBoard.getCard(game.cardFlipped.x, game.cardFlipped.y).isRevealed = false;
                     game.gameIsPaused = false;
                     game.cardFlipped = null;
                 }
@@ -79,33 +80,32 @@ public class GameStateServerDao {
         }
     }
 
-    public void gameOver(int gameId) {
+    public void endGame(int gameId) {
         GameState game = GameServer.getGameById(gameId);
         int playerOneTotalScore = 0;
         int playerTwoTotalScore = 0;
         if (game != null){
-            if (checkForGameOver(gameId) && game.gameIsOver != true){
-                game.gameIsOver = true;
-                if (game.playerOneScore > game.playerTwoScore){
-                    playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);
-                    playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, false);
-                }
-                else{
-                    playerOneTotalScore = finalPlayerScore(game.playerOneScore, false);
-                    playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, true);
-                }
-                // update scores
-                PlayerMongoDao.getInstance().updatePlayerHighScoreById(game.playerOne._id, playerOneTotalScore);
-                PlayerMongoDao.getInstance().updatePlayerHighScoreById(game.playerTwo._id, playerTwoTotalScore);
-                // update player status
-                PlayerMongoDao.getInstance().updatePlayerGameStatusById(game.playerOne._id, false, false);
-                PlayerMongoDao.getInstance().updatePlayerGameStatusById(game.playerTwo._id, false, false);
-                // update final score in game
-                game.playerOneScore = playerOneTotalScore;
-                game.playerTwoScore = playerTwoTotalScore;
-
-                WebSocketHandler.gameOverBroadcast(game);
+            game.gameIsOver = true;
+            if (game.playerOneScore > game.playerTwoScore){
+                playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);
+                playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, false);
             }
+            else{
+                playerOneTotalScore = finalPlayerScore(game.playerOneScore, false);
+                playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, true);
+            }
+            // update scores
+            PlayerMongoDao.getInstance().updatePlayerHighScoreById(game.playerOne._id, playerOneTotalScore);
+            PlayerMongoDao.getInstance().updatePlayerHighScoreById(game.playerTwo._id, playerTwoTotalScore);
+            // update player status
+            PlayerMongoDao.getInstance().updatePlayerGameStatusById(game.playerOne._id, false, false);
+            PlayerMongoDao.getInstance().updatePlayerGameStatusById(game.playerTwo._id, false, false);
+            // update final score in game
+            game.playerOneScore = playerOneTotalScore;
+            game.playerTwoScore = playerTwoTotalScore;
+
+            GameServer.removeGame(game);
+            WebSocketHandler.gameOverBroadcast(game);
         }
     }
 
