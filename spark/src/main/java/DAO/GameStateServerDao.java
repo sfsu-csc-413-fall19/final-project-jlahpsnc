@@ -46,7 +46,8 @@ public class GameStateServerDao {
                     increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
                     game.numPairsLeft--;
                     if (checkForGameOver(gameId)) {
-                        gameOver(gameId);
+                        game.gameIsOver = true;
+                        endGame(gameId);
                     } else {
                         game.gameIsPaused = true;
                         String currentPlayersTurn = game.currentPlayersTurn;
@@ -69,6 +70,7 @@ public class GameStateServerDao {
                     game.currentPlayersTurn = currentPlayersTurn;
                     changeTurns(gameId);
                     game.gameBoard.getCard(x,y).isRevealed = false;
+                    game.gameBoard.getCard(game.cardFlipped.x, game.cardFlipped.y).isRevealed = false;
                     game.gameIsPaused = false;
                     game.cardFlipped = null;
                 }
@@ -79,12 +81,12 @@ public class GameStateServerDao {
         }
     }
 
-    public void gameOver(int gameId) {
+    public void endGame(int gameId) {
         GameState game = GameServer.getGameById(gameId);
         int playerOneTotalScore = 0;
         int playerTwoTotalScore = 0;
         if (game != null){
-            if (checkForGameOver(gameId) && game.gameIsOver != true){
+            if (checkForGameOver(gameId) || game.gameIsOver == true){
                 game.gameIsOver = true;
                 if (game.playerOneScore > game.playerTwoScore){
                     playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);

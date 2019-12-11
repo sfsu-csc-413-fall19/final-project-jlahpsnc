@@ -279,7 +279,8 @@ public class GameServer {
                 else if (player.inGame){
                     for (GameState game : gameList){
                         if (game.playerOne._id == playerId || game.playerTwo._id == playerId){
-                            GameStateServerDao.getInstance().gameOver(game.gameId);
+                            game.gameIsOver = true;
+                            GameStateServerDao.getInstance().endGame(game.gameId);
                         }
                     }
                 }
