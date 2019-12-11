@@ -12,10 +12,8 @@ const Loadingpage = () => {
   const ws = React.useRef(wsSession);
 
   const messageHandler = message => {
+    // debugger;
     const jsonBody = JSON.parse(message.responseBody);
-    console.log('THE NEXT 2 LINES ARE FROM MESSAGE HANDLER: ');
-    console.log(jsonBody);
-    console.log('JSON RESPONSE TYPE: ' + message.responseType);
     switch (message.responseType) {
       case 'New Game':
         setGameState(jsonBody);

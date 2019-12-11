@@ -39,7 +39,7 @@ public class PlayerMongoDao {
             Document playerToAdd = new Document("username", username)
                     .append("password", password)
                     .append("highScore", 0)
-                    .append("isLoggedIn", false)
+                    .append("isLoggedIn", true)
                     .append("inQueue", false)
                     .append("inGame", false);
 

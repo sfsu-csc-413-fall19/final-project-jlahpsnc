@@ -33,6 +33,7 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void message(Session session, String message) throws IOException {
         GameServer.processMessage(message, session);
+        System.out.println(message);
     }
 
     public static void updateGame(GameState game) {

@@ -95,7 +95,6 @@ public class GameServer {
         if (request.queryParams().size() == 1 && playerId != null) {
             Player playerToReturn = PlayerMongoDao.getInstance().getPlayerById(playerId);
             if (playerToReturn != null) {
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 ResponseTemplate messageToReturn = new ResponseTemplate("Player Info Success", gson.toJson(playerToReturn));
                 return gson.toJson(messageToReturn);
             } else {
@@ -183,6 +182,7 @@ public class GameServer {
 
           case "Get Game":
               getGameState(response.responseBody);
+              break;
 
           case "Logout":
               logoutViaWebsocket(response.responseBody, session);
