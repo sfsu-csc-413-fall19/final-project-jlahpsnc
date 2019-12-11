@@ -102,13 +102,13 @@ public class WebSocketHandler {
             e.printStackTrace();
         }
     }
-    public static void LogoutBroadcast(ResponseTemplate response, Session session) {
-        if (session.isOpen()){
-            try {
+    public static void logoutBroadcast(ResponseTemplate response, Session session) {
+        try {
+            if (session.isOpen()) {
                 session.getRemote().sendString(gson.toJson(response));
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

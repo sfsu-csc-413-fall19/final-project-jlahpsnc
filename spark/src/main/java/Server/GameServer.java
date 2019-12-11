@@ -260,10 +260,10 @@ public class GameServer {
             } else {
                 messageToReturn = new ResponseTemplate("Logout Failed", "User is not logged in");
             }
-            WebSocketHandler.LogoutBroadcast(messageToReturn, session);
+            WebSocketHandler.logoutBroadcast(messageToReturn, session);
         } else {
             messageToReturn = new ResponseTemplate("Logout Failed", "Invalid ID");
-            WebSocketHandler.LogoutBroadcast(messageToReturn, session);
+            WebSocketHandler.logoutBroadcast(messageToReturn, session);
         }
     }
 
@@ -289,10 +289,12 @@ public class GameServer {
                         if (game.playerOne._id == playerId){
                             game.playerOne = PlayerMongoDao.getInstance().getPlayerById(playerId);
                             GameStateServerDao.getInstance().endGame(game.gameId);
+                            break;
                         }
                         else if (game.playerTwo._id == playerId){
                             game.playerTwo = PlayerMongoDao.getInstance().getPlayerById(playerId);
                             GameStateServerDao.getInstance().endGame(game.gameId);
+                            break;
                         }
                     }
                 }
