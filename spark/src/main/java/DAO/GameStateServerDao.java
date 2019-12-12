@@ -36,8 +36,8 @@ public class GameStateServerDao {
                 } else {
                     game.gameBoard.getCard(x, y).isRevealed = true;
                     game.jokerIsRevealed = true;
-                    Card matchingcard = game.gameBoard.getMatchingCardById(game.cardFlipped.cardId, game);
-                    matchingcard.isRevealed = true;
+                    Card matchingCard = game.gameBoard.getMatchingCardById(game.cardFlipped.cardId, game);
+                    matchingCard.isRevealed = true;
                     game.gameIsPaused = true;
                     String currentPlayersTurn = game.currentPlayersTurn;
                     game.currentPlayersTurn = null;
@@ -49,7 +49,7 @@ public class GameStateServerDao {
                     game.gameIsPaused = false;
                     game.gameBoard.getCard(x, y).isOffBoard = true;
                     game.gameBoard.getCard(game.cardFlipped.x, game.cardFlipped.y).isOffBoard = true;
-                    matchingcard.isOffBoard = true;
+                    matchingCard.isOffBoard = true;
                     game.cardFlipped = null;
                 }
             }
