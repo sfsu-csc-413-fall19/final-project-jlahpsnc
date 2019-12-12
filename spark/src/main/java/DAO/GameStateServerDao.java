@@ -1,5 +1,6 @@
 package DAO;
 
+import DataObjects.Card;
 import DataObjects.GameState;
 import Server.GameServer;
 import WebSocket.WebSocketHandler;
@@ -21,16 +22,33 @@ public class GameStateServerDao {
         if (game != null && game.currentPlayersTurn.equals(playerAttemptingToFlipCard) && game.gameBoard.getCard(x,y) != null) {
             // If the card is a joker
             if (game.gameBoard.getCard(x,y).cardId == 99) {
-                increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
-                game.gameBoard.getCard(x,y).isRevealed = true;
-                game.jokerIsRevealed = true;
-                game.gameIsPaused = true;
-                String currentPlayersTurn = game.currentPlayersTurn;
-                game.currentPlayersTurn = null;
-                WebSocketHandler.updatePausedGame(game);
-                game.currentPlayersTurn = currentPlayersTurn;
-                game.gameIsPaused = false;
-                game.gameBoard.getCard(x,y).isOffBoard = true;
+                if (game.cardFlipped == null) {
+                    game.gameBoard.getCard(x, y).isRevealed = true;
+                    game.jokerIsRevealed = true;
+                    game.gameIsPaused = true;
+                    String currentPlayersTurn = game.currentPlayersTurn;
+                    game.currentPlayersTurn = null;
+                    WebSocketHandler.updatePausedGame(game);
+                    increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
+                    game.currentPlayersTurn = currentPlayersTurn;
+                    game.gameIsPaused = false;
+                    game.gameBoard.getCard(x, y).isOffBoard = true;
+                } else {
+                    game.gameBoard.getCard(x, y).isRevealed = true;
+                    game.jokerIsRevealed = true;
+                    game.gameBoard.getCardById(game.cardFlipped.cardId, game).isRevealed = true;
+                    game.gameIsPaused = true;
+                    String currentPlayersTurn = game.currentPlayersTurn;
+                    game.currentPlayersTurn = null;
+                    WebSocketHandler.updatePausedGame(game);
+                    increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
+                    increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
+                    game.currentPlayersTurn = currentPlayersTurn;
+                    game.gameIsPaused = false;
+                    game.gameBoard.getCard(x, y).isOffBoard = true;
+                    game.gameBoard.getCard(game.cardFlipped.x, game.cardFlipped.y).isOffBoard = true;
+                    game.gameBoard.getCardById(game.cardFlipped.cardId, game).isOffBoard = true;
+                }
             }
             // If no other card has been flipped before, simply flip this card over
             else if (game.cardFlipped == null) {
@@ -170,7 +188,7 @@ public class GameStateServerDao {
                 return true;
             }
             else if (game.playerTwo._id == playerId) {
-                game.playerTwoScore = game.playerOneScore + 1;
+                game.playerTwoScore = game.playerTwoScore + 1;
                 return true;
             }
         }

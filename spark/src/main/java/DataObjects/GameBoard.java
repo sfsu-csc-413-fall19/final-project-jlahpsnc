@@ -29,6 +29,18 @@ public class GameBoard {
         return null;
     }
 
+    public Card getCardById(int cardId, GameState game) {
+         for (int i = 0; i < game.gameBoard.boardLayout.length; i++){
+             for (int j = 0; j < game.gameBoard.boardLayout.length; j++){
+                 if (game.gameBoard.getCard(i,j).cardId == cardId && game.gameBoard.getCard(i,j).isRevealed == false){
+                     return game.gameBoard.getCard(i,j);
+                 }
+             }
+
+        }
+        return null;
+    }
+
     public static GameBoard generateNewBoard() {
         // Create a new array with 12 pairs of matching card
         Card cardArray[] = new Card[25];

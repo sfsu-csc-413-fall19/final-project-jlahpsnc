@@ -279,12 +279,10 @@ public class GameServer {
             if (player.isLoggedIn) {
                 if (player.inQueue && queueList.size() > 0){
                     PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, false, false);
-                    PlayerMongoDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
                     queueList.remove(0);
                 }
                 else if (player.inGame){
                     PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, false, false);
-                    PlayerMongoDao.getInstance().updatePlayerLoggedStatusById(player._id, false);
                     for (GameState game : gameList){
                         if (game.playerOne._id == playerId){
                             game.playerOne = PlayerMongoDao.getInstance().getPlayerById(playerId);
