@@ -135,8 +135,7 @@ public class GameServer {
             size = allPlayers.size();
         }
 
-        Player[] topPlayers = allPlayers.subList(0, size).toArray(new Player[allPlayers.size()]);
-        ResponseTemplate messageToReturn = new ResponseTemplate("Rankings Success", gson.toJson(topPlayers));
+        Player[] topPlayers = allPlayers.subList(0, size).toArray(new Player[size]);ResponseTemplate messageToReturn = new ResponseTemplate("Rankings Success", gson.toJson(topPlayers));
         return gson.toJson(messageToReturn);
     }
 
