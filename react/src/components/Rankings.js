@@ -10,42 +10,24 @@ const Rankings = () => {
     axios
       .get(`/rankings`)
       .then(res => {
-        const players = (JSON.parse(res.data.response))
-        setRankings(players.maps(player => {
-          return {
-            username: player.username,
-            highscore: player.highscore
-          }
+        const players = JSON.parse(res.data.responseBody)
+        setRankings(players.map(player => {
+          return ({
+            Username: player.username,
+            Score: player.highScore
+          })
         }));
       })
       .catch(console.log);
   };
-   
-  // Here is the data for the table rows. Pay attention to have the same key name as the one in your columns array!
-  const products = [
-    {
-      Username: 'GamerTag1',
-      Score: 15000
-    },
-    {
-      Username: 'GamerTag2',
-      Score: 14500
-    }
-  ];
 
-  // const getRankings = () => {
-  //   axios
-  //     .get('/rankings')
-  //     .then(res => {
-  //       console.log(res);
-  //     })
-  //     .catch(console.log);
-  // };
-
-  useEffect(getAllRankings(), []);
+  useEffect( () => {
+    getAllRankings()
+  }, []);
 
   return (
     <div>
+      {console.log(rankings)}
       <Card title='Rankings' padding='0'>
         <Table columns={columns} rows={rankings} />
       </Card>
