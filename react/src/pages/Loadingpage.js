@@ -3,7 +3,7 @@ import { Container, Row, Button, Col, Icon } from 'flwww';
 import { useHistory } from 'react-router-dom';
 import Card from '../components/Card';
 
-const wsSession = new WebSocket('ws://localhost:1234/wsLoading');
+const wsSession = new WebSocket(`ws://${window.location.host}/ws`);
 const Loadingpage = () => {
   let history = useHistory();
   const [screenId, setScreenId] = React.useState('');
@@ -64,8 +64,8 @@ const Loadingpage = () => {
     messageHandler(JSON.parse(message.data));
   };
 
-  window.onbeforeunload = function() {
-    ws.current.onclose = function() {
+  window.onbeforeunload = function () {
+    ws.current.onclose = function () {
       // ws.current.send(
       //   messageBuilder('Disconnected', localStorage.getItem('id'))
       // );
@@ -117,7 +117,58 @@ const Loadingpage = () => {
   const renderBoard = () => {
     return (
       <Container>
-        <Row className="row-style">
+        <div className="game-jorge">
+          <div className="player-info">
+            {gameState.playerTwo._id === gameState.currentPlayersTurn && (
+              <Col grid="4">
+                <h2 style={{ color: '#ad62aa' }}>
+                  Current Turn <Icon type="arrowRight" />
+                </h2>
+              </Col>
+            )}
+            <Col grid="4">
+              <h1
+                style={
+                  gameState.playerTwo._id === gameState.currentPlayersTurn
+                    ? { color: '#ad62aa' }
+                    : null
+                }
+              >
+                {gameState.playerTwo.username}
+              </h1>
+            </Col>
+            <Col grid="4">
+              <h1>Score: {gameState.playerTwoScore}</h1>
+            </Col>
+
+
+            {gameState.playerOne._id === gameState.currentPlayersTurn && (
+            <Col grid="4">
+              <h2 style={{ color: '#ad62aa' }}>
+                Current Turn <Icon type="arrowRight" />
+              </h2>
+            </Col>
+          )}
+          <Col grid="4">
+            <h1
+              style={
+                gameState.playerOne._id === gameState.currentPlayersTurn
+                  ? { color: '#ad62aa' }
+                  : null
+              }
+            >
+              {gameState.playerOne.username}
+            </h1>
+          </Col>
+          <Col grid="4">
+            <h1>Score: {gameState.playerOneScore}</h1>
+          </Col>
+          </div>
+          <div className="cards">
+            <div className="gameContainer">{rows}</div>
+          </div>
+        </div>
+        {/* <Row className="row-style">
           {gameState.playerTwo._id === gameState.currentPlayersTurn && (
             <Col grid="4">
               <h2 style={{ color: '#ad62aa' }}>
@@ -139,9 +190,9 @@ const Loadingpage = () => {
           <Col grid="4">
             <h1>Score: {gameState.playerTwoScore}</h1>
           </Col>
-        </Row>
-        <div className="gameContainer">{rows}</div>
-        <Row className="row-style">
+        </Row> */}
+        {/* <div className="gameContainer">{rows}</div> */}
+        {/* <Row className="row-style">
           {gameState.playerOne._id === gameState.currentPlayersTurn && (
             <Col grid="4">
               <h2 style={{ color: '#ad62aa' }}>
@@ -163,7 +214,7 @@ const Loadingpage = () => {
           <Col grid="4">
             <h1>Score: {gameState.playerOneScore}</h1>
           </Col>
-        </Row>
+        </Row> */}
       </Container>
     );
   };

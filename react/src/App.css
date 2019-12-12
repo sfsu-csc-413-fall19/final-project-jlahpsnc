@@ -12,6 +12,23 @@
   }
 }
 
+.game-jorge {
+  background: pink;
+  display: flex;
+  height: 100%;
+}
+
+.player-info  {
+  width: 320px;
+  height:  100%;
+  margin-right: 16px;
+  border: 1px solid black;
+  overflow: hidden;
+}
+.cards {
+  flex:1
+}
+
 .gameCard:hover {
   transform: scale(1.1);
 }
