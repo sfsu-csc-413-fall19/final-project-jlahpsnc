@@ -19,7 +19,8 @@ public class GameStateServerDao {
 
     public boolean flipCard(int gameId, String playerAttemptingToFlipCard, int x, int y) {
         GameState game = GameServer.getGameById(gameId);
-        if (game != null && game.currentPlayersTurn.equals(playerAttemptingToFlipCard) && game.gameBoard.getCard(x,y) != null) {
+        if (game != null && game.currentPlayersTurn.equals(playerAttemptingToFlipCard) && game.gameBoard.getCard(x,y) != null &&
+            game.cardFlipped != game.gameBoard.getCard(x, y)) {
             // If the card is a joker
             if (game.gameBoard.getCard(x,y).cardId == 99) {
                 if (game.cardFlipped == null) {
@@ -108,11 +109,11 @@ public class GameStateServerDao {
             int playerTwoTotalScore = 0;
             game.gameIsOver = true;
             // If the first player has left the game
-            if (!game.playerOne.isLoggedIn && game.playerTwo.isLoggedIn) {
+            if (!game.playerOne.inGame && game.playerTwo.inGame) {
                 playerTwoTotalScore = finalPlayerScore(game.playerTwoScore, true);
             }
             // If the second player has left the game
-            else if (!game.playerTwo.isLoggedIn && game.playerOne.isLoggedIn) {
+            else if (!game.playerTwo.inGame && game.playerOne.inGame) {
                 playerOneTotalScore = finalPlayerScore(game.playerOneScore, true);
             }
             // If both players are still in game
