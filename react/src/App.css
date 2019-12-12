@@ -88,6 +88,11 @@ body {
   align-content: space-around;
 }
 
+.rankings {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
 .row-space-between {
   justify-content: space-between;
 }

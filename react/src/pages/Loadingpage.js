@@ -180,8 +180,13 @@ const Loadingpage = () => {
   const renderLoadingScreen = () => {
     return (
       <Container className='full-page'>
-        <h1>Welcome to the Waiting Room</h1>
-        <h1>Please stay as you will load into a game shortly</h1>
+        <Row className='row-style'>
+          <h1>Welcome to the Waiting Room</h1>
+        </Row>
+        <Row className='row-style'>
+          <h1>Please stay as you will load into a game shortly</h1>
+        </Row>
+
         <Row className='row-style'>
           <Button round onClick={() => nextPath('/home')}>
             Go Back Home
@@ -193,32 +198,44 @@ const Loadingpage = () => {
 
   const renderGameOver = () => {
     return (
-      <div>
-        <h1>GAME OVER</h1>
-        <h1>
-          {gameState.playerOne.username}'s Score: {gameState.playerOneScore}
-        </h1>
-        <h1>
-          {gameState.playerTwo.username}'s Score: {gameState.playerTwoScore}
-        </h1>
-        <Button
-          onClick={() => {
-            setScreenId('');
-            ws.current.send(
-              messageBuilder('Play Game', localStorage.getItem('id'))
-            );
-          }}
-        >
-          Go back into queue
-        </Button>
-        <Button
-          onClick={() => {
-            nextPath('/home');
-          }}
-        >
-          Go home
-        </Button>
-      </div>
+      <Container>
+        <Row className='row-style'>
+          <h1>GAME OVER</h1>
+        </Row>
+        <Row className='row-style'>
+          <h3>
+            {gameState.playerOne.username}'s Score: {gameState.playerOneScore}
+          </h3>
+        </Row>
+        <Row className='row-style'>
+          <h3>
+            {gameState.playerTwo.username}'s Score: {gameState.playerTwoScore}
+          </h3>
+        </Row>
+        <Row className='row-style'>
+          <Button
+            round
+            onClick={() => {
+              setScreenId('');
+              ws.current.send(
+                messageBuilder('Play Game', localStorage.getItem('id'))
+              );
+            }}
+          >
+            Go back into queue
+          </Button>
+        </Row>
+        <Row className='row-style'>
+          <Button
+            round
+            onClick={() => {
+              nextPath('/home');
+            }}
+          >
+            Go home
+          </Button>
+        </Row>
+      </Container>
     );
   };
 
