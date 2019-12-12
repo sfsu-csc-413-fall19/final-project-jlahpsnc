@@ -92,7 +92,7 @@ const Loadingpage = () => {
   const rows = cards.map((item, i) => {
     const entry = item.map((cardInfo, j) => {
       return (
-        <Col grid="2" key={j}>
+        <Col grid='2' key={j}>
           {!cardInfo.isOffBoard && (
             <Card
               info={cardInfo}
@@ -108,7 +108,7 @@ const Loadingpage = () => {
       );
     });
     return (
-      <Row key={i} className="row-space-between">
+      <Row key={i} className='row-space-between'>
         {entry}
       </Row>
     );
@@ -116,52 +116,61 @@ const Loadingpage = () => {
 
   const renderBoard = () => {
     return (
-      <Container>
-        <Row className="row-style">
-          {gameState.playerTwo._id === gameState.currentPlayersTurn && (
-            <Col grid="4">
-              <h2 style={{ color: '#ad62aa' }}>
-                Current Turn <Icon type="arrowRight" />
-              </h2>
-            </Col>
-          )}
-          <Col grid="4">
-            <h1
-              style={
-                gameState.playerTwo._id === gameState.currentPlayersTurn
-                  ? { color: '#ad62aa' }
-                  : null
-              }
-            >
-              {gameState.playerTwo.username}
-            </h1>
+      <Container full>
+        <Row>
+          <Col grid='6'>
+            <div className='game-container'>{rows}</div>
           </Col>
-          <Col grid="4">
-            <h1>Score: {gameState.playerTwoScore}</h1>
-          </Col>
-        </Row>
-        <div className="gameContainer">{rows}</div>
-        <Row className="row-style">
-          {gameState.playerOne._id === gameState.currentPlayersTurn && (
-            <Col grid="4">
-              <h2 style={{ color: '#ad62aa' }}>
-                Current Turn <Icon type="arrowRight" />
-              </h2>
-            </Col>
-          )}
-          <Col grid="4">
-            <h1
-              style={
-                gameState.playerOne._id === gameState.currentPlayersTurn
-                  ? { color: '#ad62aa' }
-                  : null
-              }
-            >
-              {gameState.playerOne.username}
-            </h1>
-          </Col>
-          <Col grid="4">
-            <h1>Score: {gameState.playerOneScore}</h1>
+          <Col grid='6'>
+            <div className='game-info'>
+              <Row className='row-style'>
+                {gameState.playerTwo._id === gameState.currentPlayersTurn && (
+                  <Col grid='4'>
+                    <h2 style={{ color: '#ad62aa' }}>
+                      Current Turn <Icon type='arrowRight' />
+                    </h2>
+                  </Col>
+                )}
+                <Col grid='4'>
+                  <h1
+                    className='game-username'
+                    style={
+                      gameState.playerTwo._id === gameState.currentPlayersTurn
+                        ? { color: '#ad62aa' }
+                        : null
+                    }
+                  >
+                    {gameState.playerTwo.username}
+                  </h1>
+                </Col>
+                <Col grid='4'>
+                  <h1>Score: {gameState.playerTwoScore}</h1>
+                </Col>
+              </Row>
+              <Row className='row-style'>
+                {gameState.playerOne._id === gameState.currentPlayersTurn && (
+                  <Col grid='4'>
+                    <h2 style={{ color: '#ad62aa' }}>
+                      Current Turn <Icon type='arrowRight' />
+                    </h2>
+                  </Col>
+                )}
+                <Col grid='4'>
+                  <h1
+                    style={
+                      gameState.playerOne._id === gameState.currentPlayersTurn
+                        ? { color: '#ad62aa' }
+                        : null
+                    }
+                  >
+                    {gameState.playerOne.username}
+                  </h1>
+                </Col>
+                <Col grid='4'>
+                  <h1>Score: {gameState.playerOneScore}</h1>
+                </Col>
+              </Row>
+            </div>
           </Col>
         </Row>
       </Container>
@@ -170,10 +179,15 @@ const Loadingpage = () => {
 
   const renderLoadingScreen = () => {
     return (
-      <Container className="full-page">
-        <h1>Welcome to the Waiting Room</h1>
-        <h1>Please stay as you will load into a game shortly</h1>
-        <Row className="row-style">
+      <Container className='full-page'>
+        <Row className='row-style'>
+          <h1>Welcome to the Waiting Room</h1>
+        </Row>
+        <Row className='row-style'>
+          <h1>Please stay as you will load into a game shortly</h1>
+        </Row>
+
+        <Row className='row-style'>
           <Button round onClick={() => nextPath('/home')}>
             Go Back Home
           </Button>
@@ -184,32 +198,44 @@ const Loadingpage = () => {
 
   const renderGameOver = () => {
     return (
-      <div>
-        <h1>GAME OVER</h1>
-        <h1>
-          {gameState.playerOne.username}'s Score: {gameState.playerOneScore}
-        </h1>
-        <h1>
-          {gameState.playerTwo.username}'s Score: {gameState.playerTwoScore}
-        </h1>
-        <Button
-          onClick={() => {
-            setScreenId('');
-            ws.current.send(
-              messageBuilder('Play Game', localStorage.getItem('id'))
-            );
-          }}
-        >
-          Go back into queue
-        </Button>
-        <Button
-          onClick={() => {
-            nextPath('/home');
-          }}
-        >
-          Go home
-        </Button>
-      </div>
+      <Container>
+        <Row className='row-style'>
+          <h1>GAME OVER</h1>
+        </Row>
+        <Row className='row-style'>
+          <h3>
+            {gameState.playerOne.username}'s Score: {gameState.playerOneScore}
+          </h3>
+        </Row>
+        <Row className='row-style'>
+          <h3>
+            {gameState.playerTwo.username}'s Score: {gameState.playerTwoScore}
+          </h3>
+        </Row>
+        <Row className='row-style'>
+          <Button
+            round
+            onClick={() => {
+              setScreenId('');
+              ws.current.send(
+                messageBuilder('Play Game', localStorage.getItem('id'))
+              );
+            }}
+          >
+            Go back into queue
+          </Button>
+        </Row>
+        <Row className='row-style'>
+          <Button
+            round
+            onClick={() => {
+              nextPath('/home');
+            }}
+          >
+            Go home
+          </Button>
+        </Row>
+      </Container>
     );
   };
 

@@ -9,105 +9,105 @@ const Card = ({ info, ws, gameId, currentPlayersTurn, cardId }) => {
       case 0:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/Arcade_machine.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 2:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/Cassette_tape.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 4:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/Computer.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 6:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/Floppy_disk.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 8:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/Gameboy.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 10:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/Headphone.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 12:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/Keyboard.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 14:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/Monitor.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 16:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/Mouse.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 18:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/NES.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 20:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/Tamagotchi.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       case 22:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/VHS.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
       default:
         return (
           <img
+            className='card'
             src={require('../assets/Card_visuals/king_card.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         );
     }
@@ -136,7 +136,7 @@ const Card = ({ info, ws, gameId, currentPlayersTurn, cardId }) => {
   return (
     <ReactCardFlip
       isFlipped={info.isRevealed}
-      flipDirection="horizontal"
+      flipDirection='horizontal'
       style={{ height: '100px' }}
     >
       <div
@@ -149,7 +149,7 @@ const Card = ({ info, ws, gameId, currentPlayersTurn, cardId }) => {
         }}
       >
         <button
-          className="btn"
+          className='btn'
           onClick={handleClick}
           disabled={
             currentPlayersTurn !== localStorage.getItem('id') || info.isRevealed
@@ -159,11 +159,10 @@ const Card = ({ info, ws, gameId, currentPlayersTurn, cardId }) => {
             className={
               currentPlayersTurn === localStorage.getItem('id')
                 ? 'gameCard'
-                : ''
+                : 'card'
             }
             src={require('../assets/Card_visuals/Gators.png')}
-            alt="gator"
-            style={{ height: '125px' }}
+            alt='gator'
           ></img>
         </button>
       </div>
@@ -178,7 +177,7 @@ const Card = ({ info, ws, gameId, currentPlayersTurn, cardId }) => {
         }}
       >
         <button
-          className="btn"
+          className='btn'
           onClick={handleClick}
           disabled={
             currentPlayersTurn !== localStorage.getItem('id') || info.isRevealed

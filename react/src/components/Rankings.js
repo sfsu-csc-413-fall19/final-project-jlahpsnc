@@ -29,8 +29,8 @@ const Rankings = () => {
 
   return (
     <div>
-      <Card title="Rankings" padding="0">
-        <Table columns={columns} rows={rankings} />
+      <Card title='Rankings' padding='0'>
+        <Table columns={columns} rows={rankings} className='rankings' />
       </Card>
     </div>
   );

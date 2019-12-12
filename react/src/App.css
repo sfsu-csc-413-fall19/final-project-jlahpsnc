@@ -17,8 +17,14 @@
 }
 .gameCard {
   transition: 0.2s;
+  height: 18vh;
+  width: 12vh;
 }
 
+.card {
+  height: 18vh;
+  width: 12vh;
+}
 body {
   font-family: 'M PLUS Rounded 1c', sans-serif;
   background-color: #f9f9f9;
@@ -69,6 +75,22 @@ body {
 
 .full-page {
   height: 100vh;
+}
+.game-container {
+  height: 100vh;
+  align-content: space-between;
+}
+.game-info {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  justify-content: space-between;
+  align-content: space-around;
+}
+
+.rankings {
+  max-height: 200px;
+  overflow-y: scroll;
 }
 
 .row-space-between {
