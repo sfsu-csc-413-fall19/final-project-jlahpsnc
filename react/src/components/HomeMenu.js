@@ -8,9 +8,10 @@ const HomeMenu = ({ id }) => {
   const { logout } = useContext(AuthContext);
 
   return (
-    <Col grid='2'>
-      <Row className='button-row'>
+    <Col grid="2">
+      <Row className="button-row">
         <Button
+          round
           style={{ width: 200, height: 50 }}
           onClick={() => {
             history.push('/loading');
@@ -19,11 +20,9 @@ const HomeMenu = ({ id }) => {
           Start
         </Button>
       </Row>
-      <Row className='button-row'>
-        <Button style={{ width: 200, height: 50 }}>Menu</Button>
-      </Row>
-      <Row className='button-row'>
+      <Row className="button-row">
         <Button
+          round
           style={{ width: 200, height: 50 }}
           onClick={() => logout({ id })}
         >

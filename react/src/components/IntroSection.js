@@ -1,62 +1,34 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Modal } from 'flwww';
-import { NavLink } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
 
 const IntroSection = props => {
-  let history = createBrowserHistory({ forceRefresh: true });
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const toggleModal = () => {
     setModalIsVisible(!modalIsVisible);
   };
 
-  const nextPath = path => {
-    history.push(path);
-  };
-
   return (
-    <Container className='full-page'>
-      <Row className='row-style title'>
-        <Col grid='6'>
-          <h1 id='title'>OP Memory</h1>
+    <Container className="full-page">
+      <Row className="row-style title">
+        <Col grid="4">
+          <h1 id="title">OP Memory</h1>
         </Col>
       </Row>
-      <Row className='row-style'>
+      <Row className="row-style">
         <h1>{props.title}</h1>
         <Button round onClick={toggleModal}>
           Learn how to play here!
         </Button>
 
         <Modal isVisible={modalIsVisible} toggleModal={toggleModal}>
-          <h3>How to play</h3>
-          <p>Instructions on how to play the game:</p>
-          <Button
-            onClick={toggleModal}
-            outlined
-            round
-            colors={{ mainColor: '#282f5a', secondColor: '#282f5a' }}
-          >
-            Continue
-          </Button>
+          <h3>How to play:</h3>
+          <p>Earn points by matching cards</p>
+          <p>Look out for Joker Cards!</p>
+          <p>
+            Each joker card automatically counts as 1 point and if picked
+            second, Automatically finds the pair for the first card you clicked.
+          </p>
         </Modal>
-      </Row>
-      <Row className='row-style'>
-        {/* ONLY FOR TESTING */}
-        <Button
-          outlined
-          round
-          type='danger'
-          onClick={() => nextPath('/loading')}
-        >
-          {/* <a href='/loading'>Go to loading page</a> */}
-          go to loading
-        </Button>
-        <Button outlined round type='danger' onClick={() => nextPath('/home')}>
-          {/* <NavLink to='/home'>go to home screen</NavLink> */}
-          go to home screen
-        </Button>
-        <NavLink to='/loading'>Go to loading</NavLink>
-        {/* ONLY FOR TESTING */}
       </Row>
     </Container>
   );

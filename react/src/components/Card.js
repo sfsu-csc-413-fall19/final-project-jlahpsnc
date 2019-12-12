@@ -10,104 +10,104 @@ const Card = ({ info, ws, gameId, currentPlayersTurn, cardId }) => {
         return (
           <img
             src={require('../assets/Card_visuals/Arcade_machine.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 2:
         return (
           <img
             src={require('../assets/Card_visuals/Cassette_tape.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 4:
         return (
           <img
             src={require('../assets/Card_visuals/Computer.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 6:
         return (
           <img
             src={require('../assets/Card_visuals/Floppy_disk.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 8:
         return (
           <img
             src={require('../assets/Card_visuals/Gameboy.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 10:
         return (
           <img
             src={require('../assets/Card_visuals/Headphone.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 12:
         return (
           <img
             src={require('../assets/Card_visuals/Keyboard.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 14:
         return (
           <img
             src={require('../assets/Card_visuals/Monitor.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 16:
         return (
           <img
             src={require('../assets/Card_visuals/Mouse.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 18:
         return (
           <img
             src={require('../assets/Card_visuals/NES.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 20:
         return (
           <img
             src={require('../assets/Card_visuals/Tamagotchi.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       case 22:
         return (
           <img
             src={require('../assets/Card_visuals/VHS.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
       default:
         return (
           <img
             src={require('../assets/Card_visuals/king_card.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         );
     }
@@ -136,44 +136,49 @@ const Card = ({ info, ws, gameId, currentPlayersTurn, cardId }) => {
   return (
     <ReactCardFlip
       isFlipped={info.isRevealed}
-      flipDirection='horizontal'
+      flipDirection="horizontal"
       style={{ height: '100px' }}
     >
       <div
         onClick={() => {
-          if (
-            currentPlayersTurn !== localStorage.getItem('id') ||
-            info.isRevealed
-          ) {
+          if (currentPlayersTurn !== localStorage.getItem('id')) {
             message('It is not your turn', 'error');
+          } else if (info.isRevealed) {
+            message('You cannot click the same card');
           }
         }}
       >
         <button
+          className="btn"
           onClick={handleClick}
           disabled={
             currentPlayersTurn !== localStorage.getItem('id') || info.isRevealed
           }
         >
           <img
+            className={
+              currentPlayersTurn === localStorage.getItem('id')
+                ? 'gameCard'
+                : ''
+            }
             src={require('../assets/Card_visuals/Gators.png')}
-            alt='gator'
-            style={{ height: '100px' }}
+            alt="gator"
+            style={{ height: '125px' }}
           ></img>
         </button>
       </div>
 
       <div
         onClick={() => {
-          if (
-            currentPlayersTurn !== localStorage.getItem('id') ||
-            info.isRevealed
-          ) {
+          if (currentPlayersTurn !== localStorage.getItem('id')) {
             message('It is not your turn', 'error');
+          } else if (info.isRevealed) {
+            message('You cannot click the same card');
           }
         }}
       >
         <button
+          className="btn"
           onClick={handleClick}
           disabled={
             currentPlayersTurn !== localStorage.getItem('id') || info.isRevealed

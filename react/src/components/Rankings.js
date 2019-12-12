@@ -5,30 +5,31 @@ import axios from 'axios';
 const Rankings = () => {
   const columns = ['Username', 'Score'];
   const [rankings, setRankings] = useState([]);
- 
-  const getAllRankings =() => {
+
+  const getAllRankings = () => {
     axios
       .get(`/rankings`)
       .then(res => {
-        const players = JSON.parse(res.data.responseBody)
-        setRankings(players.map(player => {
-          return ({
-            Username: player.username,
-            Score: player.highScore
+        const players = JSON.parse(res.data.responseBody);
+        setRankings(
+          players.map(player => {
+            return {
+              Username: player.username,
+              Score: player.highScore
+            };
           })
-        }));
+        );
       })
       .catch(console.log);
   };
 
-  useEffect( () => {
-    getAllRankings()
+  useEffect(() => {
+    getAllRankings();
   }, []);
 
   return (
     <div>
-      {console.log(rankings)}
-      <Card title='Rankings' padding='0'>
+      <Card title="Rankings" padding="0">
         <Table columns={columns} rows={rankings} />
       </Card>
     </div>

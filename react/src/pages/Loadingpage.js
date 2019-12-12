@@ -1,6 +1,6 @@
 import React from 'react';
-import { Container, Row, Button, Col } from 'flwww';
-import { NavLink, useHistory } from 'react-router-dom';
+import { Container, Row, Button, Col, Icon } from 'flwww';
+import { useHistory } from 'react-router-dom';
 import Card from '../components/Card';
 
 const wsSession = new WebSocket('ws://localhost:1234/wsLoading');
@@ -13,7 +13,7 @@ const Loadingpage = () => {
 
   const messageHandler = message => {
     const jsonBody = JSON.parse(message.responseBody);
-    // console.log(jsonBody);
+    console.log(jsonBody);
     console.log(message.responseType);
     switch (message.responseType) {
       case 'New Game':
@@ -38,7 +38,6 @@ const Loadingpage = () => {
       case 'Game Over':
         //RENDER GAME OVER SCREEN/FILTER
         console.log('THE GAME SHOULD HAVE ENDED HERE');
-        console.log(jsonBody);
         setGameState(jsonBody);
         setCards(jsonBody.gameBoard.boardLayout);
         setScreenId('Game Over');
@@ -93,7 +92,7 @@ const Loadingpage = () => {
   const rows = cards.map((item, i) => {
     const entry = item.map((cardInfo, j) => {
       return (
-        <Col grid='2' key={j}>
+        <Col grid="2" key={j}>
           {!cardInfo.isOffBoard && (
             <Card
               info={cardInfo}
@@ -109,7 +108,7 @@ const Loadingpage = () => {
       );
     });
     return (
-      <Row key={i} className='gameRow'>
+      <Row key={i} className="row-space-between">
         {entry}
       </Row>
     );
@@ -118,65 +117,66 @@ const Loadingpage = () => {
   const renderBoard = () => {
     return (
       <Container>
-        <Container>
-          <Row className='row-style'>
-            <Col grid='4'>
-              <h1
-                style={
-                  gameState.playerTwo._id === gameState.currentPlayersTurn
-                    ? { color: 'green' }
-                    : null
-                }
-              >
-                {gameState.playerTwo.username}
-              </h1>
+        <Row className="row-style">
+          {gameState.playerTwo._id === gameState.currentPlayersTurn && (
+            <Col grid="4">
+              <h2 style={{ color: '#ad62aa' }}>
+                Current Turn <Icon type="arrowRight" />
+              </h2>
             </Col>
-            <Col grid='4'>
-              <h1>Score: {gameState.playerTwoScore}</h1>
+          )}
+          <Col grid="4">
+            <h1
+              style={
+                gameState.playerTwo._id === gameState.currentPlayersTurn
+                  ? { color: '#ad62aa' }
+                  : null
+              }
+            >
+              {gameState.playerTwo.username}
+            </h1>
+          </Col>
+          <Col grid="4">
+            <h1>Score: {gameState.playerTwoScore}</h1>
+          </Col>
+        </Row>
+        <div className="gameContainer">{rows}</div>
+        <Row className="row-style">
+          {gameState.playerOne._id === gameState.currentPlayersTurn && (
+            <Col grid="4">
+              <h2 style={{ color: '#ad62aa' }}>
+                Current Turn <Icon type="arrowRight" />
+              </h2>
             </Col>
-          </Row>
-          <div className='gameContainer'>{rows}</div>
-          <Row className='row-style'>
-            <Col grid='4'>
-              <h1
-                style={
-                  gameState.playerOne._id === gameState.currentPlayersTurn
-                    ? { color: 'green' }
-                    : null
-                }
-              >
-                {gameState.playerOne.username}
-              </h1>
-            </Col>
-            <Col grid='4'>
-              <h1>Score: {gameState.playerOneScore}</h1>
-            </Col>
-          </Row>
-        </Container>
+          )}
+          <Col grid="4">
+            <h1
+              style={
+                gameState.playerOne._id === gameState.currentPlayersTurn
+                  ? { color: '#ad62aa' }
+                  : null
+              }
+            >
+              {gameState.playerOne.username}
+            </h1>
+          </Col>
+          <Col grid="4">
+            <h1>Score: {gameState.playerOneScore}</h1>
+          </Col>
+        </Row>
       </Container>
     );
   };
 
   const renderLoadingScreen = () => {
     return (
-      <Container className='full-page'>
+      <Container className="full-page">
         <h1>Welcome to the Waiting Room</h1>
         <h1>Please stay as you will load into a game shortly</h1>
-        <Row className='row-style'>
-          <Button outlined round type='danger' onClick={() => nextPath('/')}>
-            {/* <a href='/loading'>Go to loading page</a> */}
-            go to start page
+        <Row className="row-style">
+          <Button round onClick={() => nextPath('/home')}>
+            Go Back Home
           </Button>
-          <Button
-            outlined
-            round
-            type='danger'
-            onClick={() => nextPath('/home')}
-          >
-            {/* <NavLink to='/home'>go to home screen</NavLink> */}
-            go to home screen
-          </Button>
-          <NavLink to='/'>Go to loading</NavLink>
         </Row>
       </Container>
     );
@@ -186,6 +186,12 @@ const Loadingpage = () => {
     return (
       <div>
         <h1>GAME OVER</h1>
+        <h1>
+          {gameState.playerOne.username}'s Score: {gameState.playerOneScore}
+        </h1>
+        <h1>
+          {gameState.playerTwo.username}'s Score: {gameState.playerTwoScore}
+        </h1>
         <Button
           onClick={() => {
             setScreenId('');
