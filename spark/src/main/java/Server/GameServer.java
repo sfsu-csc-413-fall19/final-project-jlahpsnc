@@ -10,7 +10,7 @@ import Response.ResponseTemplate;
 import WebSocket.WebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import javafx.util.Pair;
+import com.sun.tools.javac.util.Pair;
 import spark.Request;
 import spark.Response;
 import org.eclipse.jetty.websocket.api.Session;
@@ -141,12 +141,12 @@ public class GameServer {
 
     // Helper function to create a game, given two players and their sessions
     private static void createGame(Pair<Player, Session> playerOne, Pair<Player, Session> playerTwo) {
-        GameState newGame = new GameState(generateNewGameId(), playerOne.getKey(), playerOne.getValue(),
-                playerTwo.getKey(), playerTwo.getValue());
+        GameState newGame = new GameState(generateNewGameId(), playerOne.fst, playerOne.snd,
+                playerTwo.fst, playerTwo.snd);
 
         gameList.add(newGame);
-        PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerOne.getKey()._id, false, true);
-        PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerTwo.getKey()._id, false, true);
+        PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerOne.fst._id, false, true);
+        PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerTwo.fst._id, false, true);
         WebSocketHandler.newGameBroadcast(newGame);
     }
 
@@ -219,9 +219,9 @@ public class GameServer {
             // After adding a player to the queue, attempt to match them with someone else in the queue
             if (queueList.size() == 2) {
                 Pair<Player, Session> playerOne = queueList.remove(0);
-                PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerOne.getKey()._id, false, false);
+                PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerOne.fst._id, false, false);
                 Pair<Player, Session> playerTwo = queueList.remove(0);
-                PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerTwo.getKey()._id, false, false);
+                PlayerMongoDao.getInstance().updatePlayerGameStatusById(playerTwo.fst._id, false, false);
 
                 createGame(playerOne, playerTwo);
             }
