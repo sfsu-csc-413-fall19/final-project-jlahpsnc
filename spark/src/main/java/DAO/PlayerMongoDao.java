@@ -118,10 +118,8 @@ public class PlayerMongoDao {
             ObjectId idToSearch = new ObjectId(id);
             Document foundPlayer = playerCollection.find(eq("_id", idToSearch)).first();
             if (foundPlayer != null) {
-                playerCollection.updateOne(eq("_id", idToSearch),
-                        new Document("$set", new Document("inQueue", inQueue)));
-                playerCollection.updateOne(eq("_id", idToSearch),
-                        new Document("$set", new Document("inGame", inGame)));
+                playerCollection.updateOne(eq("_id", idToSearch), new Document("$set", new Document("inQueue", inQueue)));
+                playerCollection.updateOne(eq("_id", idToSearch), new Document("$set", new Document("inGame", inGame)));
 
                 Player playerToReturn = new Player(
                         foundPlayer.get("_id").toString(),

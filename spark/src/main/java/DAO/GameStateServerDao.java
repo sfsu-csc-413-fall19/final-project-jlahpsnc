@@ -170,7 +170,7 @@ public class GameStateServerDao {
                 return true;
             }
             else if (game.playerTwo._id == playerId) {
-                game.playerTwoScore = game.playerOneScore + 1;
+                game.playerTwoScore = game.playerTwoScore + 1;
                 return true;
             }
         }

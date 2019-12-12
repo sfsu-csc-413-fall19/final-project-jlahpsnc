@@ -28,7 +28,7 @@ const theme = {
 const App = () => {
   const isAuthenticated = localStorage.getItem('id');
   return (
-    <Router>
+    <Router forceRefresh={true}>
       <Switch>
         <Route exact path='/'>
           <ThemeProvider theme={theme}>
