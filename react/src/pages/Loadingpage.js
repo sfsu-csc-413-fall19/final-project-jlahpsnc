@@ -13,6 +13,8 @@ const Loadingpage = () => {
 
   const messageHandler = message => {
     const jsonBody = JSON.parse(message.responseBody);
+    // console.log(jsonBody);
+    console.log(message.responseType);
     switch (message.responseType) {
       case 'New Game':
         setGameState(jsonBody);
@@ -25,14 +27,21 @@ const Loadingpage = () => {
         setCards(jsonBody.gameBoard.boardLayout);
         setTimeout(() => {
           ws.current.send(messageBuilder('Get Game', jsonBody.gameId));
-        }, 2000);
+        }, 1000);
         break;
       case 'Update Game':
         console.log('THE GAME HAS BEEN UPDATED. NO PRINTING');
+        //MAYBE WAIT
         setGameState(jsonBody);
         setCards(jsonBody.gameBoard.boardLayout);
         break;
       case 'Game Over':
+        //RENDER GAME OVER SCREEN/FILTER
+        console.log('THE GAME SHOULD HAVE ENDED HERE');
+        console.log(jsonBody);
+        setGameState(jsonBody);
+        setCards(jsonBody.gameBoard.boardLayout);
+        setScreenId('Game Over');
         break;
       default:
         break;
@@ -57,17 +66,19 @@ const Loadingpage = () => {
   };
 
   window.onbeforeunload = function() {
-    ws.current.onclose = function() {}; // disable onclose handler first
+    ws.current.onclose = function() {
+      // ws.current.send(
+      //   messageBuilder('Disconnected', localStorage.getItem('id'))
+      // );
+      // localStorage.removeItem('id');
+    }; // disable onclose handler first
+    ws.current.send(messageBuilder('Disconnected', localStorage.getItem('id')));
     console.log('connection closed');
     ws.close();
   };
 
   ws.current.onclose = () => {
-    console.log('connection closed');
-  };
-
-  ws.current.onclose = () => {
-    console.log('connection closed');
+    console.log('THIS USED THE REGULAR ON CLOSE METHOD');
   };
 
   ws.current.onerror = () => {
@@ -76,6 +87,7 @@ const Loadingpage = () => {
 
   const nextPath = path => {
     history.push(path);
+    ws.current.close();
   };
 
   const rows = cards.map((item, i) => {
@@ -170,10 +182,37 @@ const Loadingpage = () => {
     );
   };
 
+  const renderGameOver = () => {
+    return (
+      <div>
+        <h1>GAME OVER</h1>
+        <Button
+          onClick={() => {
+            setScreenId('');
+            ws.current.send(
+              messageBuilder('Play Game', localStorage.getItem('id'))
+            );
+          }}
+        >
+          Go back into queue
+        </Button>
+        <Button
+          onClick={() => {
+            nextPath('/home');
+          }}
+        >
+          Go home
+        </Button>
+      </div>
+    );
+  };
+
   const renderScreen = screenId => {
     switch (screenId) {
       case 'Game Board':
         return renderBoard();
+      case 'Game Over':
+        return renderGameOver();
       default:
         return renderLoadingScreen();
     }
