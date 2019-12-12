@@ -1,38 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Table } from 'flwww';
-// import axios from 'axios';
+import axios from 'axios';
 
 const Rankings = () => {
   const columns = ['Username', 'Score'];
-  // const [rankings, setRankings] = useState([]);
+  const [rankings, setRankings] = useState([]);
+ 
+  const getAllRankings =() => {
+    axios
+      .get(`/rankings`)
+      .then(res => {
+        const players = JSON.parse(res.data.responseBody)
+        setRankings(players.map(player => {
+          return ({
+            Username: player.username,
+            Score: player.highScore
+          })
+        }));
+      })
+      .catch(console.log);
+  };
 
-  // Here is the data for the table rows. Pay attention to have the same key name as the one in your columns array!
-  const products = [
-    {
-      Username: 'GamerTag1',
-      Score: 15000
-    },
-    {
-      Username: 'GamerTag2',
-      Score: 14500
-    }
-  ];
-
-  // const getRankings = () => {
-  //   axios
-  //     .get('/rankings')
-  //     .then(res => {
-  //       console.log(res);
-  //     })
-  //     .catch(console.log);
-  // };
-
-  // useEffect(getRankings(), []);
+  useEffect( () => {
+    getAllRankings()
+  }, []);
 
   return (
     <div>
+      {console.log(rankings)}
       <Card title='Rankings' padding='0'>
-        <Table columns={columns} rows={products} />
+        <Table columns={columns} rows={rankings} />
       </Card>
     </div>
   );
