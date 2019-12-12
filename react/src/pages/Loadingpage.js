@@ -185,7 +185,7 @@ const Loadingpage = () => {
   const renderGameOver = () => {
     return (
       <div>
-        <h1>GAME OVER BITCH</h1>
+        <h1>GAME OVER</h1>
         <Button
           onClick={() => {
             setScreenId('');
