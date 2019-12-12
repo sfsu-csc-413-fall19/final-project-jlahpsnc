@@ -60,7 +60,7 @@ public class WebSocketHandler {
         }
     }
 
-    public static void updatePausedGame(GameState game) {
+    public static void pausedGameBroadcast(GameState game) {
         ResponseTemplate response = new ResponseTemplate();
         response.setResponseType("Paused Game");
         response.setResponseBody(gson.toJson(game.getGameStateDto()));

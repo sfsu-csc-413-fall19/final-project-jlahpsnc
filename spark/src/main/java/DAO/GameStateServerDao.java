@@ -1,5 +1,6 @@
 package DAO;
 
+import DataObjects.Card;
 import DataObjects.GameState;
 import Server.GameServer;
 import WebSocket.WebSocketHandler;
@@ -21,16 +22,36 @@ public class GameStateServerDao {
         if (game != null && game.currentPlayersTurn.equals(playerAttemptingToFlipCard) && game.gameBoard.getCard(x,y) != null) {
             // If the card is a joker
             if (game.gameBoard.getCard(x,y).cardId == 99) {
-                increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
-                game.gameBoard.getCard(x,y).isRevealed = true;
-                game.jokerIsRevealed = true;
-                game.gameIsPaused = true;
-                String currentPlayersTurn = game.currentPlayersTurn;
-                game.currentPlayersTurn = null;
-                WebSocketHandler.updatePausedGame(game);
-                game.currentPlayersTurn = currentPlayersTurn;
-                game.gameIsPaused = false;
-                game.gameBoard.getCard(x,y).isOffBoard = true;
+                if (game.cardFlipped == null) {
+                    game.gameBoard.getCard(x, y).isRevealed = true;
+                    game.jokerIsRevealed = true;
+                    game.gameIsPaused = true;
+                    String currentPlayersTurn = game.currentPlayersTurn;
+                    game.currentPlayersTurn = null;
+                    WebSocketHandler.pausedGameBroadcast(game);
+                    game.currentPlayersTurn = currentPlayersTurn;
+                    increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
+                    game.gameIsPaused = false;
+                    game.gameBoard.getCard(x, y).isOffBoard = true;
+                } else {
+                    game.gameBoard.getCard(x, y).isRevealed = true;
+                    game.jokerIsRevealed = true;
+                    Card matchingCard = game.gameBoard.getMatchingCardById(game.cardFlipped.cardId, game);
+                    matchingCard.isRevealed = true;
+                    game.gameIsPaused = true;
+                    String currentPlayersTurn = game.currentPlayersTurn;
+                    game.currentPlayersTurn = null;
+                    WebSocketHandler.pausedGameBroadcast(game);
+                    game.currentPlayersTurn = currentPlayersTurn;
+                    increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
+                    increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
+                    game.numPairsLeft--;
+                    game.gameIsPaused = false;
+                    game.gameBoard.getCard(x, y).isOffBoard = true;
+                    game.gameBoard.getCard(game.cardFlipped.x, game.cardFlipped.y).isOffBoard = true;
+                    matchingCard.isOffBoard = true;
+                    game.cardFlipped = null;
+                }
             }
             // If no other card has been flipped before, simply flip this card over
             else if (game.cardFlipped == null) {
@@ -43,7 +64,6 @@ public class GameStateServerDao {
                 // If the second card being flipped matches the already flipped card
                 if (game.gameBoard.getCard(x,y).cardId == game.cardFlipped.cardId) {
                     game.gameBoard.getCard(x, y).isRevealed = true;
-                    increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
                     game.numPairsLeft--;
                     if (checkForGameOver(gameId)) {
                         endGame(gameId);
@@ -51,8 +71,9 @@ public class GameStateServerDao {
                         game.gameIsPaused = true;
                         String currentPlayersTurn = game.currentPlayersTurn;
                         game.currentPlayersTurn = null;
-                        WebSocketHandler.updatePausedGame(game);
+                        WebSocketHandler.pausedGameBroadcast(game);
                         game.currentPlayersTurn = currentPlayersTurn;
+                        increasePlayerScoreByOne(gameId, game.currentPlayersTurn);
                         game.gameIsPaused = false;
                         game.gameBoard.getCard(game.cardFlipped.x, game.cardFlipped.y).isOffBoard = true;
                         game.gameBoard.getCard(x, y).isOffBoard = true;
@@ -65,7 +86,7 @@ public class GameStateServerDao {
                     game.gameIsPaused = true;
                     String currentPlayersTurn = game.currentPlayersTurn;
                     game.currentPlayersTurn = null;
-                    WebSocketHandler.updatePausedGame(game);
+                    WebSocketHandler.pausedGameBroadcast(game);
                     game.currentPlayersTurn = currentPlayersTurn;
                     changeTurns(gameId);
                     game.gameBoard.getCard(x,y).isRevealed = false;
