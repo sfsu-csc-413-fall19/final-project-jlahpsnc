@@ -213,7 +213,7 @@ public class GameServer {
     */
     public static void addPlayerToQueue(String playerId, Session session) {
         Player player = PlayerMongoDao.getInstance().getPlayerById(playerId);
-        if (player != null) {
+        if (player != null && player.isLoggedIn && !player.inGame && !player.inQueue) {
             queueList.add(new Pair<>(player, session));
             PlayerMongoDao.getInstance().updatePlayerGameStatusById(player._id, true, false);
 
