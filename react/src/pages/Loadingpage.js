@@ -3,7 +3,12 @@ import { Container, Row, Button, Col, Icon } from 'flwww';
 import { useHistory } from 'react-router-dom';
 import Card from '../components/Card';
 
-const wsSession = new WebSocket('ws://http://10.143.145.226:3000//wsLoading');
+// Amazon Server
+const wsSession = new WebSocket('ws://http://18.191.185.44:3000//wsLoading');
+
+// MY IP WHEN RUNNING!!
+//const wsSession = new WebSocket('ws://10.143.145.226:1234/wsLoading');
+
 const Loadingpage = () => {
   let history = useHistory();
   const [screenId, setScreenId] = React.useState('');
