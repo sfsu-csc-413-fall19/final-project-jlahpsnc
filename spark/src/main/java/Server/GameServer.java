@@ -44,6 +44,11 @@ public class GameServer {
     get("/rankings", GameServer::rankings);
 
     get("/userEntered", GameServer::userEntered);
+
+    get("*", (request, response)  -> {
+        response.redirect("/");
+        return "redirected";
+    });
     }
 
     private static String logIn(Request request, Response response) {
