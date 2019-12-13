@@ -46,7 +46,7 @@ public class GameServer {
     get("/userEntered", GameServer::userEntered);
 
     get("*", (request, response)  -> {
-        response.redirect("/index");
+        response.redirect("/front-end");
         return "redirected";
     });
     }
