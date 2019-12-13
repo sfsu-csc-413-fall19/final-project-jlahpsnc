@@ -41,6 +41,8 @@ public class GameServer {
     get("/playerInfo", GameServer::playerInfo);
 
     get("/rankings", GameServer::rankings);
+
+    get("/userEntered", GameServer::userEntered);
     }
 
     private static String logIn(Request request, Response response) {
@@ -76,6 +78,10 @@ public class GameServer {
         String username = request.queryMap("username").value();
         String password = request.queryMap("password").value();
         if (request.queryParams().size() == 2 && username != null && password != null) {
+            if (username.length() > 12) {
+                ResponseTemplate messageToReturn = new ResponseTemplate("Register Failed", "Username too long");
+                return gson.toJson(messageToReturn);
+            }
             String newUserId = PlayerMongoDao.getInstance().addPlayerToDatabase(username, password);
             if (newUserId != null) {
                 ResponseTemplate messageToReturn = new ResponseTemplate("Register Success", newUserId);
@@ -105,6 +111,11 @@ public class GameServer {
             ResponseTemplate messageToReturn = new ResponseTemplate("Player Info Failed", "Invalid query");
             return gson.toJson(messageToReturn);
         }
+    }
+
+    private static String userEntered(Request request, Response response) {
+        System.out.println("Main Page: New User Entered");
+        return "ok";
     }
 
     private static String logoutViaHTTP(Request request, Response response) {

@@ -16,18 +16,14 @@ public class WebSocketHandler {
 
     @OnWebSocketConnect
     public void connected(Session session) throws IOException {
-        System.out.println("A client has connected");
     }
 
     @OnWebSocketClose
     public void closed(Session session, int statusCode, String reason) throws IOException{
-        System.out.println("A client has disconnected");
-        System.out.println(reason);
     }
 
     @OnWebSocketMessage
     public void message(Session session, String message) throws IOException {
-        System.out.println(message);
         GameServer.processMessage(message, session);
     }
 
