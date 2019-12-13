@@ -116,7 +116,7 @@ const Loadingpage = () => {
 
   const renderBoard = () => {
     return (
-      <Container full>
+      <Container full='true'>
         <Row>
           <Col grid='6'>
             <div className='game-container'>{rows}</div>
