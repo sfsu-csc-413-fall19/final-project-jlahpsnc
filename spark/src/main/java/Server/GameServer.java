@@ -29,7 +29,7 @@ public class GameServer {
 
     public static void main(String[] args) {
     port(1234);
-    staticFiles.externalLocation(System.getProperty("user.dir") + "/react"); // Static files location
+    staticFiles.externalLocation(System.getProperty("user.dir") + "/front-end"); // Static files location
 
     webSocket("/wsLoading", WebSocketHandler.class);
 
