@@ -129,8 +129,6 @@ const Card = ({ info, ws, gameId, currentPlayersTurn, cardId }) => {
 
     ws.current.send(JSON.stringify(flipCardInfo));
     setIsFlipped(!isFlipped);
-    console.log('this is the card info: ');
-    console.log(info);
   };
 
   return (

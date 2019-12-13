@@ -3,7 +3,7 @@ import { Container, Row, Button, Col, Icon } from 'flwww';
 import { useHistory } from 'react-router-dom';
 import Card from '../components/Card';
 
-const wsSession = new WebSocket('ws://172.31.43.133:1234/wsLoading');
+const wsSession = new WebSocket('ws://http://10.143.145.226:3000//wsLoading');
 const Loadingpage = () => {
   let history = useHistory();
   const [screenId, setScreenId] = React.useState('');
@@ -13,8 +13,6 @@ const Loadingpage = () => {
 
   const messageHandler = message => {
     const jsonBody = JSON.parse(message.responseBody);
-    console.log(jsonBody);
-    console.log(message.responseType);
     switch (message.responseType) {
       case 'New Game':
         setGameState(jsonBody);
@@ -22,7 +20,6 @@ const Loadingpage = () => {
         setScreenId('Game Board');
         break;
       case 'Paused Game':
-        console.log('PAUSED GAME: ');
         setGameState(jsonBody);
         setCards(jsonBody.gameBoard.boardLayout);
         setTimeout(() => {
@@ -30,14 +27,12 @@ const Loadingpage = () => {
         }, 1000);
         break;
       case 'Update Game':
-        console.log('THE GAME HAS BEEN UPDATED. NO PRINTING');
         //MAYBE WAIT
         setGameState(jsonBody);
         setCards(jsonBody.gameBoard.boardLayout);
         break;
       case 'Game Over':
         //RENDER GAME OVER SCREEN/FILTER
-        console.log('THE GAME SHOULD HAVE ENDED HERE');
         setGameState(jsonBody);
         setCards(jsonBody.gameBoard.boardLayout);
         setScreenId('Game Over');
